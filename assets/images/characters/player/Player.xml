@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="Player.png">
+	<!-- Created with Adobe Animate version 23.0.2.103 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Player0000" x="0" y="0" width="318" height="532" frameX="-25" frameY="0" frameWidth="343" frameHeight="546"/>
+	<SubTexture name="Player0001" x="323" y="0" width="268" height="519" frameX="-27" frameY="-19" frameWidth="343" frameHeight="546"/>
+	<SubTexture name="Player0002" x="596" y="0" width="318" height="532" frameX="0" frameY="-14" frameWidth="343" frameHeight="546"/>
+	<SubTexture name="Player0003" x="919" y="0" width="268" height="505" frameX="-37" frameY="-32" frameWidth="343" frameHeight="546"/>
+</TextureAtlas>
