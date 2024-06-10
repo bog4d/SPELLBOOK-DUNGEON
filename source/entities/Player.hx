@@ -18,17 +18,32 @@ class Player extends FlxSprite
 		scale.set(.3, .3);
 		updateHitbox();
 
+		origin.y += 300;
+		offset.y += 205;
+
 		antialiasing = true;
 	}
 
 	private var moveInput:FlxPoint = new FlxPoint(0, 0);
 
+	var timeSinceSpawn:Float = 0;
+
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+		timeSinceSpawn += elapsed;
 
 		HandleMovement(elapsed);
 		HandleLooking();
+
+		if (Math.abs(velocity.x) > 5 || Math.abs(velocity.y) > 5)
+		{
+			scale.y = FlxMath.lerp(scale.y, .3 + Math.sin(timeSinceSpawn * 20) / 50, 15 * elapsed);
+		}
+		else
+		{
+			scale.y = FlxMath.lerp(scale.y, .3 + Math.sin(timeSinceSpawn * 2) / 100, 15 * elapsed);
+		}
 	}
 
 	var moveDir:FlxPoint = new FlxPoint(0, 0);
