@@ -1,5 +1,6 @@
 package states;
 
+import components.HUD;
 import entities.Player;
 import flixel.FlxCamera;
 import flixel.FlxG;
@@ -14,6 +15,8 @@ class PlayState extends FlxState
 
 	var camGame:FlxCamera;
 	var camHud:FlxCamera;
+
+	var hud:HUD;
 
 	var player:Player;
 
@@ -34,6 +37,9 @@ class PlayState extends FlxState
 
 		camHud.bgColor.alpha = 0;
 		//--------------------\\
+		hud = new HUD();
+		hud.cameras = [camHud];
+
 		player = new Player();
 		player.screenCenter();
 
@@ -48,10 +54,15 @@ class PlayState extends FlxState
 		crosshair.setPosition(FlxG.mouse.getWorldPosition(camGame).x, FlxG.mouse.getWorldPosition(camGame).y);
 
 		//-----[Layering]-----\\
-		add(crosshairLine);
+		add(new FlxSprite(FlxG.width / 2, FlxG.height / 2, 'assets/images/poorCheem.png'));
+		// add(crosshairLine); pretty broken sorry
 		add(player);
 		add(crosshair);
+
+		// hud stuff
+		add(hud);
 		//---------------------\\
+		camGame.follow(player, TOPDOWN, 1);
 		super.create();
 
 		camGame.bgColor = 0xFF353535;
@@ -60,6 +71,7 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		camGame.followLerp = 5 * elapsed;
 
 		HandleCrosshair(elapsed);
 	}
@@ -79,11 +91,11 @@ class PlayState extends FlxState
 
 		FlxSpriteUtil.fill(crosshairLine, 0);
 
-		FlxSpriteUtil.drawLine(crosshairLine, player.x
-			+ player.width / 2, player.y
-			+ player.height / 2, crosshair.x
-			+ crosshair.origin.x,
-			crosshair.y
+		FlxSpriteUtil.drawLine(crosshairLine, player.getScreenPosition().x
+			+ player.width / 2, player.getScreenPosition().y
+			+ player.height / 2,
+			crosshair.x
+			+ crosshair.origin.x, crosshair.y
 			+ crosshair.origin.y, {
 				thickness: 3,
 				color: 0xFF872341
