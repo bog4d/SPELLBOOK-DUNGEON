@@ -3,11 +3,12 @@ package entities;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 
 class Player extends FlxSprite
 {
-	public var speed:Float = 250;
+	public var speed:Float = 300;
 
 	public function new()
 	{
@@ -26,8 +27,48 @@ class Player extends FlxSprite
 	{
 		super.update(elapsed);
 
-		HandleMovement();
+		HandleMovement(elapsed);
+		HandleLooking();
+	}
 
+	var moveDir:FlxPoint = new FlxPoint(0, 0);
+
+	private function HandleMovement(elapsed:Float):Void
+	{
+		if (FlxG.keys.anyPressed(KeyBinds.PLR_RIGHT))
+		{
+			moveDir.x = 1;
+		}
+		else if (FlxG.keys.anyPressed(KeyBinds.PLR_LEFT))
+		{
+			moveDir.x = -1;
+		}
+		else
+		{
+			moveDir.x = 0;
+		}
+
+		if (FlxG.keys.anyPressed(KeyBinds.PLR_UP))
+		{
+			moveDir.y = -1;
+		}
+		else if (FlxG.keys.anyPressed(KeyBinds.PLR_DOWN))
+		{
+			moveDir.y = 1;
+		}
+		else
+		{
+			moveDir.y = 0;
+		}
+
+		var newVel = moveDir.normalize() * speed;
+
+		velocity.x = FlxMath.lerp(velocity.x, newVel.x, 15 * elapsed);
+		velocity.y = FlxMath.lerp(velocity.y, newVel.y, 15 * elapsed);
+	}
+
+	private function HandleLooking():Void
+	{
 		var mousePos:FlxPoint = FlxG.mouse.getWorldPosition(FlxG.camera);
 
 		if (mousePos.x > this.x + width)
@@ -46,36 +87,5 @@ class Player extends FlxSprite
 		{
 			animation.frameIndex = 2;
 		}
-	}
-
-	private function HandleMovement():Void
-	{
-		if (FlxG.keys.anyPressed(KeyBinds.PLR_RIGHT))
-		{
-			velocity.x = 1;
-		}
-		else if (FlxG.keys.anyPressed(KeyBinds.PLR_LEFT))
-		{
-			velocity.x = -1;
-		}
-		else
-		{
-			velocity.x = 0;
-		}
-
-		if (FlxG.keys.anyPressed(KeyBinds.PLR_UP))
-		{
-			velocity.y = -1;
-		}
-		else if (FlxG.keys.anyPressed(KeyBinds.PLR_DOWN))
-		{
-			velocity.y = 1;
-		}
-		else
-		{
-			velocity.y = 0;
-		}
-
-		velocity = velocity.normalize() * speed;
 	}
 }
