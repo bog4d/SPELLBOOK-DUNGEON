@@ -26,12 +26,11 @@ class PlayState extends FlxState
 		camGame = new FlxCamera();
 		camHud = new FlxCamera();
 
-		camHud.bgColor.alpha = 0;
-
-		FlxCamera.defaultCameras = [camGame];
-
 		FlxG.cameras.reset(camGame);
+		FlxCamera.defaultCameras = [camGame];
 		FlxG.cameras.add(camHud);
+
+		camHud.bgColor.alpha = 0;
 		//--------------------\\
 		player = new Player();
 		player.screenCenter();
