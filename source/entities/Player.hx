@@ -48,6 +48,8 @@ class Player extends FlxSprite
 
 	var moveDir:FlxPoint = new FlxPoint(0, 0);
 
+	public var disableMoveInput:Bool = false;
+
 	private function HandleMovement(elapsed:Float):Void
 	{
 		if (FlxG.keys.anyPressed(KeyBinds.PLR_RIGHT))
@@ -76,7 +78,7 @@ class Player extends FlxSprite
 			moveDir.y = 0;
 		}
 
-		var newVel = moveDir.normalize() * speed;
+		var newVel = (!disableMoveInput) ? (moveDir.normalize() * speed) : FlxPoint.get();
 
 		velocity.x = FlxMath.lerp(velocity.x, newVel.x, 15 * elapsed);
 		velocity.y = FlxMath.lerp(velocity.y, newVel.y, 15 * elapsed);

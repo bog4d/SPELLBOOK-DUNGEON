@@ -1,13 +1,17 @@
 package states;
 
 import components.HUD;
+import components.SpellCastText;
 import entities.Player;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.math.FlxMath;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxSpriteUtil;
+import flixel.util.FlxTimer;
 
 class PlayState extends FlxState
 {
@@ -19,6 +23,7 @@ class PlayState extends FlxState
 	var hud:HUD;
 
 	var player:Player;
+	var spellCastTxt:SpellCastText;
 
 	var crosshair:FlxSprite;
 	var crosshairLine:FlxSprite;
@@ -26,7 +31,7 @@ class PlayState extends FlxState
 	override public function create()
 	{
 		instance = this;
-
+		FlxG.timeScale = 1;
 		//-----[Cameras]-----\\
 		camGame = new FlxCamera();
 		camHud = new FlxCamera();
@@ -43,6 +48,8 @@ class PlayState extends FlxState
 		player = new Player();
 		player.screenCenter();
 
+		spellCastTxt = new SpellCastText();
+
 		crosshairLine = new FlxSprite();
 		crosshairLine.makeGraphic(FlxG.width, FlxG.height, 0, true);
 		crosshairLine.antialiasing = true;
@@ -57,6 +64,7 @@ class PlayState extends FlxState
 		add(new FlxSprite(FlxG.width / 2, FlxG.height / 2, 'assets/images/poorCheem.png'));
 		// add(crosshairLine); pretty broken sorry
 		add(player);
+		add(spellCastTxt);
 		add(crosshair);
 
 		// hud stuff
@@ -73,7 +81,10 @@ class PlayState extends FlxState
 		super.update(elapsed);
 		camGame.followLerp = 5 * elapsed;
 
+		spellCastTxt.setPosition(player.x + player.width / 2, player.y - 35);
+
 		HandleCrosshair(elapsed);
+		HandleSpellCasting(elapsed);
 	}
 
 	var crosshairLerpX:Float;
@@ -102,5 +113,63 @@ class PlayState extends FlxState
 			});
 
 		crosshairLine.setPosition(camGame.scroll.x, camGame.scroll.y);
+	}
+
+	var canCastSpell:Bool = true;
+	var isinSpellMode:Bool = false;
+
+	private function HandleSpellCasting(elapsed:Float):Void
+	{
+		if (FlxG.keys.anyJustPressed(KeyBinds.CAST_SPELL) && canCastSpell)
+		{
+			canCastSpell = false;
+			isinSpellMode = true;
+
+			player.disableMoveInput = true;
+			spellCastTxt.acceptInput = true;
+
+			spellCastTxt.curSpell = '';
+
+			camGame.follow(null);
+			FlxTween.tween(camGame.scroll, {x: player.x + player.width / 2 - FlxG.width / 2, y: player.y + player.height / 2 - FlxG.height / 2}, 1,
+				{ease: FlxEase.expoOut});
+
+			FlxTween.num(FlxG.timeScale, 0.3, 1, {ease: FlxEase.expoOut}, (num) -> if (isinSpellMode) FlxG.timeScale = num);
+			FlxTween.tween(camGame, {zoom: 1.5}, 1, {ease: FlxEase.expoOut});
+
+			hud.spellTimeBar.scale.x = FlxG.width;
+			FlxSpriteUtil.fadeIn(hud.spellTimeBar, 0.1);
+
+			FlxTween.tween(hud.spellTimeBar.scale, {x: 1}, 1.2, {
+				onComplete: (twn) ->
+				{
+					exitSpell();
+				}
+			});
+		}
+
+		if (FlxG.keys.justPressed.ENTER && isinSpellMode)
+		{
+			FlxTween.cancelTweensOf(camGame);
+			FlxTween.cancelTweensOf(camGame.scroll);
+			FlxTween.cancelTweensOf(hud.spellTimeBar.scale);
+			exitSpell();
+		}
+	}
+
+	private function exitSpell():Void
+	{
+		isinSpellMode = false;
+		FlxG.timeScale = 1;
+		new FlxTimer().start(1, (tmr) -> canCastSpell = true);
+		camGame.follow(player, TOPDOWN);
+		spellCastTxt.resetText();
+		player.disableMoveInput = spellCastTxt.acceptInput = false;
+
+		FlxTween.tween(camGame, {zoom: 1}, .3, {ease: FlxEase.backInOut});
+		FlxSpriteUtil.fadeOut(hud.spellTimeBar, 0.1);
+		camGame.flash(0x10FFFFFF, 0.3);
+
+		trace('FINAL SPELL: ${spellCastTxt.curSpell}');
 	}
 }
