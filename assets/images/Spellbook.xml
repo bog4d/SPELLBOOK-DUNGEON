@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="Spellbook.png">
+	<!-- Created with Adobe Animate version 23.0.2.103 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="SpellbookNest0000" x="0" y="0" width="169" height="170"/>
+	<SubTexture name="SpellbookNest0001" x="0" y="0" width="169" height="170"/>
+	<SubTexture name="SpellbookNest0002" x="174" y="0" width="168" height="170" frameX="-1" frameY="0" frameWidth="169" frameHeight="170"/>
+	<SubTexture name="SpellbookNest0003" x="174" y="0" width="168" height="170" frameX="-1" frameY="0" frameWidth="169" frameHeight="170"/>
+	<SubTexture name="SpellbookNest0004" x="0" y="175" width="169" height="170"/>
+	<SubTexture name="SpellbookNest0005" x="0" y="175" width="169" height="170"/>
+</TextureAtlas>

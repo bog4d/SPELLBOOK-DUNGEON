@@ -12,6 +12,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
+import objects.SpellBook;
 
 class PlayState extends FlxState
 {
@@ -22,11 +23,17 @@ class PlayState extends FlxState
 
 	var hud:HUD;
 
-	var player:Player;
+	public var player:Player;
+
 	var spellCastTxt:SpellCastText;
 
 	var crosshair:FlxSprite;
 	var crosshairLine:FlxSprite;
+
+	public static var unlockedSpells:Map<SPELLS_ACTION, Bool> = [
+		EXPLOSION => false, HEAL => false, POISON => false, TELEPORT => false, SPEED_BOOST => false, BURST => false, PIERCER => false, BOUNCE => false,
+		SONIC_SHOT => false, DOUBLE_DAMAGE => false, DOUBLE_DEFENCE => false
+	];
 
 	override public function create()
 	{
@@ -63,6 +70,8 @@ class PlayState extends FlxState
 		//-----[Layering]-----\\
 		add(new FlxSprite(FlxG.width / 2, FlxG.height / 2, 'assets/images/poorCheem.png'));
 		// add(crosshairLine); pretty broken sorry
+		add(new SpellBook(HEAL));
+
 		add(player);
 		add(spellCastTxt);
 		add(crosshair);
@@ -180,10 +189,58 @@ class PlayState extends FlxState
 		{
 			case 'KYS', 'KILLYOURSELF', 'DIE':
 				trace('DIE!!!!');
+			case 'EXPLOSION':
+				if (unlockedSpells[EXPLOSION] == false)
+					return;
 			case 'HEAL':
+				if (unlockedSpells[HEAL] == false)
+					return;
 				trace('gain sum more hp hehe');
+			case 'POISON':
+				if (unlockedSpells[POISON] == false)
+					return;
+			case 'TELEPORT':
+				if (unlockedSpells[TELEPORT] == false)
+					return;
+			case 'SPEEDBOOST':
+				if (unlockedSpells[SPEED_BOOST] == false)
+					return;
+			case 'BURST':
+				if (unlockedSpells[BURST] == false)
+					return;
+			case 'PIERCER':
+				if (unlockedSpells[PIERCER] == false)
+					return;
+			case 'BOUNCE':
+				if (unlockedSpells[BOUNCE] == false)
+					return;
+			case 'SONICSHOT':
+				if (unlockedSpells[SONIC_SHOT] == false)
+					return;
+			case 'TWOXDMG':
+				if (unlockedSpells[DOUBLE_DAMAGE] == false)
+					return;
+			case 'TWOXDEF':
+				if (unlockedSpells[DOUBLE_DEFENCE] == false)
+					return;
 			default:
 				trace("SPELL DOESNT EXIST!!!");
+		}
+	}
+
+	public function UnlockSpell(spell:SPELLS_ACTION)
+	{
+		if (spell == null)
+			return;
+		hud.triggerNewSpellBg(spell);
+		unlockedSpells[spell] = true;
+	}
+
+	public function resetProgress():Void
+	{
+		for (spell in unlockedSpells)
+		{
+			spell = false;
 		}
 	}
 }
