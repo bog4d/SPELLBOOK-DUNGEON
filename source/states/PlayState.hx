@@ -171,5 +171,19 @@ class PlayState extends FlxState
 		camGame.flash(0x10FFFFFF, 0.3);
 
 		trace('FINAL SPELL: ${spellCastTxt.curSpell}');
+		InvokeSpell(spellCastTxt.curSpell);
+	}
+
+	private function InvokeSpell(spell:String):Void
+	{
+		switch (spell.toUpperCase())
+		{
+			case 'KYS', 'KILLYOURSELF', 'DIE':
+				trace('DIE!!!!');
+			case 'HEAL':
+				trace('gain sum more hp hehe');
+			default:
+				trace("SPELL DOESNT EXIST!!!");
+		}
 	}
 }
