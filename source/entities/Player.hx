@@ -17,9 +17,12 @@ class Player extends FlxSprite
 		frames = FlxAtlasFrames.fromSparrow('assets/images/characters/player/Player.png', 'assets/images/characters/player/Player.xml');
 		scale.set(.3, .3);
 		updateHitbox();
+		height = 10;
+		width -= 25;
 
 		origin.y += 300;
-		offset.y += 205;
+		offset.y += 360;
+		offset.x += 10;
 
 		antialiasing = true;
 	}

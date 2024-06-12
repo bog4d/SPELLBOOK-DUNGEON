@@ -5,6 +5,7 @@ import components.SpellCastText;
 import entities.Player;
 import flixel.FlxCamera;
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.math.FlxMath;
@@ -24,6 +25,7 @@ class PlayState extends FlxState
 	var hud:HUD;
 
 	public var player:Player;
+	public var plrHurtbox:FlxObject;
 
 	var spellCastTxt:SpellCastText;
 
@@ -55,6 +57,8 @@ class PlayState extends FlxState
 		player = new Player();
 		player.screenCenter();
 
+		plrHurtbox = new FlxObject(player.x, player.y, 50, 125);
+
 		spellCastTxt = new SpellCastText();
 
 		crosshairLine = new FlxSprite();
@@ -73,6 +77,8 @@ class PlayState extends FlxState
 		add(new SpellBook(HEAL));
 
 		add(player);
+		add(plrHurtbox);
+
 		add(spellCastTxt);
 		add(crosshair);
 
@@ -89,8 +95,9 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 		camGame.followLerp = 5 * elapsed;
+		plrHurtbox.setPosition(player.x + 15, player.y - 125);
 
-		spellCastTxt.setPosition(player.x + player.width / 2, player.y - 35);
+		spellCastTxt.setPosition(player.x + player.width / 2, player.y - 200);
 
 		HandleCrosshair(elapsed);
 		HandleSpellCasting(elapsed);
