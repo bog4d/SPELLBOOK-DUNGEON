@@ -1,10 +1,12 @@
 package entities;
 
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+import states.PlayState;
 
 class Player extends FlxSprite
 {
@@ -91,19 +93,21 @@ class Player extends FlxSprite
 	{
 		var mousePos:FlxPoint = FlxG.mouse.getWorldPosition(FlxG.camera);
 
-		if (mousePos.x > this.x + width)
+		var hurtbox:FlxObject = PlayState.instance.plrHurtbox;
+
+		if (mousePos.x > hurtbox.x + hurtbox.width)
 		{
 			animation.frameIndex = 1;
 		}
-		else if (mousePos.x < this.x)
+		else if (mousePos.x < hurtbox.x)
 		{
 			animation.frameIndex = 3;
 		}
-		else if (mousePos.y > y + height / 2)
+		else if (mousePos.y > hurtbox.y + hurtbox.height / 2)
 		{
 			animation.frameIndex = 0;
 		}
-		else if (mousePos.y < y + height / 2)
+		else if (mousePos.y < hurtbox.y + hurtbox.height / 2)
 		{
 			animation.frameIndex = 2;
 		}

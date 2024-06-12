@@ -8,6 +8,8 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.addons.display.FlxBackdrop;
+import flixel.addons.display.FlxGridOverlay;
 import flixel.math.FlxMath;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -31,6 +33,8 @@ class PlayState extends FlxState
 
 	var crosshair:FlxSprite;
 	var crosshairLine:FlxSprite;
+
+	private var bg:FlxBackdrop;
 
 	public static var unlockedSpells:Map<SPELLS_ACTION, Bool> = [
 		EXPLOSION => false, HEAL => false, POISON => false, TELEPORT => false, SPEED_BOOST => false, BURST => false, PIERCER => false, BOUNCE => false,
@@ -71,7 +75,14 @@ class PlayState extends FlxState
 		crosshair.updateHitbox();
 		crosshair.setPosition(FlxG.mouse.getWorldPosition(camGame).x, FlxG.mouse.getWorldPosition(camGame).y);
 
+		final gridGraphic = FlxGridOverlay.createGrid(64, 64, 128, 128, true, 0xFF0E0E0E, 0xFF222222);
+		bg = new FlxBackdrop(gridGraphic, XY);
+		bg.scrollFactor.set(.3, .3);
+		bg.velocity.set(15, 15);
+		bg.color = 0xFF393939;
+
 		//-----[Layering]-----\\
+		add(bg);
 		add(new FlxSprite(FlxG.width / 2, FlxG.height / 2, 'assets/images/poorCheem.png'));
 		// add(crosshairLine); pretty broken sorry
 		add(new SpellBook(HEAL));
@@ -85,7 +96,7 @@ class PlayState extends FlxState
 		// hud stuff
 		add(hud);
 		//---------------------\\
-		camGame.follow(player, TOPDOWN, 1);
+		camGame.follow(plrHurtbox, TOPDOWN, 1);
 		super.create();
 
 		camGame.bgColor = 0xFF353535;
@@ -147,7 +158,8 @@ class PlayState extends FlxState
 			spellCastTxt.curSpell = '';
 
 			camGame.follow(null);
-			FlxTween.tween(camGame.scroll, {x: player.x + player.width / 2 - FlxG.width / 2, y: player.y + player.height / 2 - FlxG.height / 2}, 1,
+			FlxTween.tween(camGame.scroll,
+				{x: plrHurtbox.x + plrHurtbox.width / 2 - FlxG.width / 2, y: plrHurtbox.y + plrHurtbox.height / 2 - FlxG.height / 2}, 1,
 				{ease: FlxEase.expoOut});
 
 			FlxTween.num(FlxG.timeScale, 0.3, 1, {ease: FlxEase.expoOut}, (num) -> if (isinSpellMode) FlxG.timeScale = num);
@@ -178,7 +190,7 @@ class PlayState extends FlxState
 		isinSpellMode = false;
 		FlxG.timeScale = 1;
 		new FlxTimer().start(1, (tmr) -> canCastSpell = true);
-		camGame.follow(player, TOPDOWN);
+		camGame.follow(plrHurtbox, TOPDOWN);
 		spellCastTxt.resetText();
 		player.disableMoveInput = spellCastTxt.acceptInput = false;
 
