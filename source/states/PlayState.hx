@@ -2,6 +2,7 @@ package states;
 
 import components.HUD;
 import components.SpellCastText;
+import entities.Ghoul;
 import entities.Player;
 import flixel.FlxCamera;
 import flixel.FlxG;
@@ -12,6 +13,7 @@ import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.tile.FlxTilemap;
@@ -39,7 +41,12 @@ class PlayState extends FlxState
 	var crosshair:FlxSprite;
 
 	var prefabLoader:FlxOgmo3Loader;
-	var prefabGrp:FlxTypedGroup<FlxTilemap>;
+
+	public var prefabGrp:FlxTypedGroup<FlxTilemap>;
+
+	public var projectileGrp:FlxTypedGroup<Projectile>;
+	public var enemyGrp:FlxGroup;
+
 	var prefabLoaders:Map<String, FlxOgmo3Loader> = [];
 
 	public static var unlockedSpells:Map<SPELLS_ACTION, Bool> = [
@@ -89,7 +96,6 @@ class PlayState extends FlxState
 
 		player = new Player();
 		player.screenCenter();
-
 		plrHurtbox = new FlxObject(player.x, player.y, 50, 125);
 
 		spellCastTxt = new SpellCastText();
@@ -99,6 +105,16 @@ class PlayState extends FlxState
 		crosshair.scale.set(.8, .8);
 		crosshair.updateHitbox();
 		crosshair.setPosition(FlxG.mouse.getWorldPosition(camGame).x, FlxG.mouse.getWorldPosition(camGame).y);
+
+		projectileGrp = new FlxTypedGroup<Projectile>();
+		Projectile.resetEffects();
+
+		enemyGrp = new FlxGroup();
+
+		var ghoul = new Ghoul();
+		ghoul.screenCenter();
+		ghoul.y -= 500;
+		enemyGrp.add(ghoul);
 
 		final gridGraphic = FlxGridOverlay.createGrid(64, 64, 128, 128, true, 0xFF0E0E0E, 0xFF222222);
 		var bg = new FlxBackdrop(gridGraphic, XY);
@@ -110,6 +126,8 @@ class PlayState extends FlxState
 		add(bg);
 		add(prefabGrp);
 
+		add(enemyGrp);
+		add(projectileGrp);
 		add(player);
 		add(plrHurtbox);
 
@@ -129,6 +147,7 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 		FlxG.collide(player, prefabGrp);
+		FlxG.collide(enemyGrp, prefabGrp);
 
 		camGame.followLerp = 5 * elapsed;
 		plrHurtbox.setPosition(player.x + 15, player.y - 125);
@@ -216,8 +235,6 @@ class PlayState extends FlxState
 		InvokeSpell(spellCastTxt.curSpell);
 	}
 
-	var isSonicShotInProgress:Bool = false;
-
 	private function InvokeSpell(spell:String):Void
 	{
 		switch (spell.toUpperCase())
@@ -244,22 +261,36 @@ class PlayState extends FlxState
 				if (unlockedSpells[BURST] == false)
 					return;
 			case 'PIERCER':
-				if (unlockedSpells[PIERCER] == false)
+				if (unlockedSpells[PIERCER] == false || Projectile.activeEffects['piercer'])
 					return;
+
+				Projectile.activeEffects['piercer'] = true;
+
+				new FlxTimer().start(5, (tmr) ->
+				{
+					Projectile.activeEffects['piercer'] = false;
+				});
 			case 'BOUNCE':
-				if (unlockedSpells[BOUNCE] == false)
+				if (unlockedSpells[BOUNCE] == false || Projectile.activeEffects['bounce'])
 					return;
+
+				Projectile.activeEffects['bounce'] = true;
+
+				new FlxTimer().start(5, (tmr) ->
+				{
+					Projectile.activeEffects['bounce'] = false;
+				});
 			case 'SONICSHOT':
-				if (unlockedSpells[SONIC_SHOT] == false || isSonicShotInProgress)
+				if (unlockedSpells[SONIC_SHOT] == false || Projectile.activeEffects['sonic_shot'])
 					return;
-				isSonicShotInProgress = true;
+				Projectile.activeEffects['sonic_shot'] = true;
 
 				Projectile.speed *= 2;
 				shootingCooldown = 0.1;
 
 				new FlxTimer().start(5, (tmr) ->
 				{
-					isSonicShotInProgress = false;
+					Projectile.activeEffects['sonic_shot'] = false;
 					Projectile.speed /= 2;
 					shootingCooldown = 0.3;
 				});
@@ -309,7 +340,7 @@ class PlayState extends FlxState
 			var projSpawnPos:FlxPoint = new FlxPoint(plrHurtbox.getMidpoint().x, plrHurtbox.getMidpoint().y);
 			var projectile:Projectile = new Projectile(projSpawnPos, FlxG.mouse.getScreenPosition(camGame));
 
-			insert(members.indexOf(player), projectile);
+			projectileGrp.add(projectile);
 
 			new FlxTimer().start(shootingCooldown, (tmr) -> canShoot = true);
 		}
