@@ -290,7 +290,7 @@ class PlayState extends FlxState
 		if (FlxG.mouse.justPressed && canShoot && !isinSpellMode)
 		{
 			canShoot = false;
-			var projSpawnPos:FlxPoint = new FlxPoint(plrHurtbox.x + plrHurtbox.width / 2, plrHurtbox.y + plrHurtbox.height / 2);
+			var projSpawnPos:FlxPoint = new FlxPoint(plrHurtbox.getMidpoint().x, plrHurtbox.getMidpoint().y);
 			var projectile:Projectile = new Projectile(projSpawnPos, FlxG.mouse.getScreenPosition(camGame));
 
 			insert(members.indexOf(player), projectile);
