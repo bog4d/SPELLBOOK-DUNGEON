@@ -96,7 +96,6 @@ class PlayState extends FlxState
 		//-----[Layering]-----\\
 		add(bg);
 		add(prefabGrp);
-		add(crosshairLine); // pretty broken sorry
 		add(new SpellBook(HEAL));
 
 		add(player);

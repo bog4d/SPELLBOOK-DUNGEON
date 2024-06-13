@@ -77,10 +77,12 @@ class HUD extends FlxSpriteGroup
 		spellTimeBar.screenCenter(X);
 		spellunlock_bg.screenCenter(X);
 
-		#if debug
-		if (FlxG.keys.justPressed.K)
-			triggerNewSpellBg(SPEED_BOOST);
-		#end
+		/*
+			#if debug
+			if (FlxG.keys.justPressed.K)
+				triggerNewSpellBg(SPEED_BOOST);
+			#end
+		 */
 	}
 
 	public function triggerNewSpellBg(spell:SPELLS_ACTION):Void
