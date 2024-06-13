@@ -1,5 +1,6 @@
 package entities;
 
+import components.IEnemy.IKillable;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -8,8 +9,9 @@ import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import states.PlayState;
 
-class Player extends FlxSprite
+class Player extends FlxSprite implements IKillable
 {
+	public var hp:Int = 100;
 	public var speed:Float = 300;
 
 	public function new()
@@ -50,6 +52,10 @@ class Player extends FlxSprite
 			scale.y = FlxMath.lerp(scale.y, .3 + Math.sin(timeSinceSpawn * 2) / 100, 15 * elapsed);
 		}
 	}
+
+	public function takeDamage(dmg:Int):Void {}
+
+	public function onDeath():Void {}
 
 	var moveDir:FlxPoint = new FlxPoint(0, 0);
 
