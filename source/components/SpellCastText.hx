@@ -48,14 +48,12 @@ class SpellCastText extends FlxSpriteGroup
 
 		if (FlxG.keys.firstJustPressed() != -1)
 		{
-			/* 
-				// im just stupid
-				if (FlxG.keys.firstJustPressed() == FlxKey.BACKSPACE && characters.members != [])
-				{
-					characters.group.members.pop();
-					return;
-				}
-			 */
+			// im just stupid
+			if (FlxG.keys.firstJustPressed() == FlxKey.BACKSPACE && characters.members != [])
+			{
+				characters.group.remove(characters.members[characters.length - 1], true);
+				return;
+			}
 
 			for (key in acceptedKeys)
 			{
