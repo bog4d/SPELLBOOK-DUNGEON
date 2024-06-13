@@ -52,6 +52,7 @@ class SpellCastText extends FlxSpriteGroup
 			if (FlxG.keys.firstJustPressed() == FlxKey.BACKSPACE && characters.members != [])
 			{
 				characters.group.remove(characters.members[characters.length - 1], true);
+				curSpell = curSpell.substring(0, curSpell.length - 1);
 				return;
 			}
 

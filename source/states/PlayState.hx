@@ -102,7 +102,7 @@ class PlayState extends FlxState
 		// hud stuff
 		add(hud);
 		//---------------------\\
-		camGame.follow(plrHurtbox, TOPDOWN, 1);
+		camGame.follow(plrHurtbox, LOCKON, 1);
 		super.create();
 
 		camGame.bgColor = 0xFF353535;
@@ -190,7 +190,7 @@ class PlayState extends FlxState
 		isinSpellMode = false;
 		FlxG.timeScale = 1;
 		new FlxTimer().start(1, (tmr) -> canCastSpell = true);
-		camGame.follow(plrHurtbox, TOPDOWN);
+		camGame.follow(plrHurtbox, LOCKON);
 		spellCastTxt.resetText();
 		player.disableMoveInput = spellCastTxt.acceptInput = false;
 
