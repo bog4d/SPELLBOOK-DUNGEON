@@ -1,0 +1,37 @@
+{
+  "ogmoVersion": "3.4.0",
+  "width": 1280,
+  "height": 720,
+  "offsetX": 0,
+  "offsetY": 0,
+  "layers": [
+    {
+      "name": "Level",
+      "_eid": "04878125",
+      "offsetX": 0,
+      "offsetY": 0,
+      "gridCellWidth": 128,
+      "gridCellHeight": 128,
+      "gridCellsX": 10,
+      "gridCellsY": 7,
+      "tileset": "Tileset",
+      "data": [-1, -1, -1, 17, 3, 4, 4, -1, -1, -1, -1, -1, -1, 17, 11, 12, 12, -1, -1, -1, -1, -1, -1, 17, 8, 9, 9, -1, -1, -1, -1, -1, -1, 17, 16, 1, 25, -1, -1, -1, -1, -1, -1, 17, 16, 18, 17, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
+      "exportMode": 0,
+      "arrayMode": 0
+    },
+    {
+      "name": "Entities",
+      "_eid": "04876752",
+      "offsetX": 0,
+      "offsetY": 0,
+      "gridCellWidth": 16,
+      "gridCellHeight": 16,
+      "gridCellsX": 80,
+      "gridCellsY": 45,
+      "entities": [
+        {"name": "Connector", "id": 0, "_eid": "04873657", "x": 864, "y": 368, "originX": 0, "originY": 0},
+        {"name": "Connector", "id": 1, "_eid": "04873657", "x": 624, "y": 608, "originX": 0, "originY": 0}
+      ]
+    }
+  ]
+}
