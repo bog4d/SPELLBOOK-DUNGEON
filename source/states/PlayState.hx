@@ -34,7 +34,6 @@ class PlayState extends FlxState
 
 	var spellCastTxt:SpellCastText;
 	var crosshair:FlxSprite;
-	var crosshairLine:FlxSprite;
 
 	var prefabLoader:FlxOgmo3Loader;
 	var prefabGrp:FlxTypedGroup<FlxTilemap>;
@@ -77,10 +76,6 @@ class PlayState extends FlxState
 
 		spellCastTxt = new SpellCastText();
 
-		crosshairLine = new FlxSprite();
-		crosshairLine.makeGraphic(FlxG.width, FlxG.height, 0, true);
-		crosshairLine.antialiasing = true;
-
 		crosshair = new FlxSprite('assets/images/crosshair.png');
 		crosshair.antialiasing = true;
 		crosshair.scale.set(.8, .8);
@@ -96,7 +91,6 @@ class PlayState extends FlxState
 		//-----[Layering]-----\\
 		add(bg);
 		add(prefabGrp);
-		add(crosshairLine); // pretty broken sorry
 		add(new SpellBook(HEAL));
 
 		add(player);
@@ -122,8 +116,11 @@ class PlayState extends FlxState
 		camGame.followLerp = 5 * elapsed;
 		plrHurtbox.setPosition(player.x + 15, player.y - 125);
 
+		var lerp = camGame.followLerp * 2;
 		// THIS IS BAD. I HATE THIS. CHEEM. HELP. CHEEEEM. CHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEM
-		// camGame.setScrollBoundsRect(plrHurtbox.x - FlxG.width, plrHurtbox.y - FlxG.height, 1280, 720, true);
+		camGame.setScrollBoundsRect((player.x - FlxG.width * 0.5) * lerp - FlxG.width, (player.y - FlxG.height * 0.5) * lerp - FlxG.height,
+			(player.width + FlxG.width) / lerp, (player.height + FlxG.height) / lerp, true);
+		// prefabGrp.members[0].follow();
 
 		spellCastTxt.setPosition(player.x + player.width / 2, player.y - 200);
 
@@ -143,22 +140,6 @@ class PlayState extends FlxState
 		crosshair.y = FlxMath.lerp(crosshair.y, crosshairLerpY, 15 * elapsed);
 
 		crosshair.angle += 25 * elapsed;
-
-		FlxSpriteUtil.fill(crosshairLine, 0);
-
-		FlxSpriteUtil.drawLine(crosshairLine, player.getScreenPosition().x
-			+ player.width / 2, player.getScreenPosition().y
-			+ player.height / 2,
-			crosshair.x
-			+ crosshair.origin.x, crosshair.y
-			+ crosshair.origin.y, {
-				thickness: 3,
-				color: 0xFF872341
-			});
-
-		@:privateAccess
-		crosshairLine.velocity.copyFrom(player.velocity);
-		crosshairLine.velocity.scale(0.5);
 	}
 
 	var canCastSpell:Bool = true;
