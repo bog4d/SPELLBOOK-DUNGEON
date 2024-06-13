@@ -1,6 +1,7 @@
 package objects;
 
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxAngle;
 import flixel.math.FlxMath;
@@ -46,15 +47,20 @@ class Projectile extends FlxSprite
 	override function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
-		if (activeEffects['bounce'])
-			FlxG.collide(this, PlayState.instance.enemyGrp);
 
-		elasticity = activeEffects['bounce'] ? .65 : 0;
+		if (activeEffects['bounce'])
+			FlxG.collide(this, PlayState.instance.enemyGrp,
+				(_:Projectile, two:FlxObject) -> _.angle = FlxAngle.TO_DEG * Math.atan2(velocity.x / speed, -(velocity.y / speed)) - 90);
+
+		elasticity = activeEffects['bounce'] ? 1 : 0;
 
 		FlxG.collide(this, PlayState.instance.prefabGrp, (projectile:Projectile, prefab) ->
 		{
 			if (activeEffects['bounce'])
+			{
+				projectile.angle = FlxAngle.TO_DEG * Math.atan2(velocity.x / speed, -(velocity.y / speed)) - 90;
 				return;
+			}
 			destroy();
 		});
 
