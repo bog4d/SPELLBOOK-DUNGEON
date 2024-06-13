@@ -36,7 +36,6 @@ class PlayState extends FlxState
 
 	var spellCastTxt:SpellCastText;
 	var crosshair:FlxSprite;
-	var crosshairLine:FlxSprite;
 
 	var prefabLoader:FlxOgmo3Loader;
 	var prefabGrp:FlxTypedGroup<FlxTilemap>;
@@ -79,10 +78,6 @@ class PlayState extends FlxState
 
 		spellCastTxt = new SpellCastText();
 
-		crosshairLine = new FlxSprite();
-		crosshairLine.makeGraphic(FlxG.width, FlxG.height, 0, true);
-		crosshairLine.antialiasing = true;
-
 		crosshair = new FlxSprite('assets/images/crosshair.png');
 		crosshair.antialiasing = true;
 		crosshair.scale.set(.8, .8);
@@ -123,8 +118,8 @@ class PlayState extends FlxState
 		plrHurtbox.setPosition(player.x + 15, player.y - 125);
 
 		// THIS IS BAD. I HATE THIS. CHEEM. HELP. CHEEEEM. CHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEM
-		// camGame.setScrollBoundsRect(plrHurtbox.x - FlxG.width, plrHurtbox.y - FlxG.height, 1280, 720, true);
-
+		// *superman pose gif meme with Starman by David Bowie playing in the background* - Cheems
+		camGame.setScrollBoundsRect(plrHurtbox.x - FlxG.width * 0.5, plrHurtbox.y - FlxG.height * 0.5, FlxG.width * 2, FlxG.height * 2, true);
 		spellCastTxt.setPosition(player.x + player.width / 2, player.y - 200);
 
 		HandleCrosshair(elapsed);
@@ -144,22 +139,6 @@ class PlayState extends FlxState
 		crosshair.y = FlxMath.lerp(crosshair.y, crosshairLerpY, 15 * elapsed);
 
 		crosshair.angle += 25 * elapsed;
-
-		FlxSpriteUtil.fill(crosshairLine, 0);
-
-		FlxSpriteUtil.drawLine(crosshairLine, player.getScreenPosition().x
-			+ player.width / 2, player.getScreenPosition().y
-			+ player.height / 2,
-			crosshair.x
-			+ crosshair.origin.x, crosshair.y
-			+ crosshair.origin.y, {
-				thickness: 3,
-				color: 0xFF872341
-			});
-
-		@:privateAccess
-		crosshairLine.velocity.copyFrom(player.velocity);
-		crosshairLine.velocity.scale(0.5);
 	}
 
 	var canCastSpell:Bool = true;
@@ -178,9 +157,8 @@ class PlayState extends FlxState
 			spellCastTxt.curSpell = '';
 
 			camGame.follow(null);
-			FlxTween.tween(camGame.scroll,
-				{x: plrHurtbox.x + plrHurtbox.width / 2 - FlxG.width / 2, y: plrHurtbox.y + plrHurtbox.height / 2 - FlxG.height / 2}, 1,
-				{ease: FlxEase.expoOut});
+			var mid = plrHurtbox.getMidpoint();
+			FlxTween.tween(camGame.scroll, {x: mid.x - FlxG.width * 0.5, y: mid.y - FlxG.height * 0.5}, 1, {ease: FlxEase.expoOut});
 
 			FlxTween.num(FlxG.timeScale, 0.3, 1, {ease: FlxEase.expoOut}, (num) -> if (isinSpellMode) FlxG.timeScale = num);
 			FlxTween.tween(camGame, {zoom: 1.5}, 1, {ease: FlxEase.expoOut});
