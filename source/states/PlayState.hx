@@ -116,12 +116,9 @@ class PlayState extends FlxState
 		camGame.followLerp = 5 * elapsed;
 		plrHurtbox.setPosition(player.x + 15, player.y - 125);
 
-		var lerp = camGame.followLerp * 2;
 		// THIS IS BAD. I HATE THIS. CHEEM. HELP. CHEEEEM. CHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEM
-		camGame.setScrollBoundsRect((player.x - FlxG.width * 0.5) * lerp - FlxG.width, (player.y - FlxG.height * 0.5) * lerp - FlxG.height,
-			(player.width + FlxG.width) / lerp, (player.height + FlxG.height) / lerp, true);
-		// prefabGrp.members[0].follow();
-
+		// *superman pose gif meme with Starman by David Bowie playing in the background* - Cheems
+		camGame.setScrollBoundsRect(plrHurtbox.x - FlxG.width * 0.5, plrHurtbox.y - FlxG.height * 0.5, FlxG.width * 2, FlxG.height * 2, true);
 		spellCastTxt.setPosition(player.x + player.width / 2, player.y - 200);
 
 		HandleCrosshair(elapsed);
@@ -158,9 +155,8 @@ class PlayState extends FlxState
 			spellCastTxt.curSpell = '';
 
 			camGame.follow(null);
-			FlxTween.tween(camGame.scroll,
-				{x: plrHurtbox.x + plrHurtbox.width / 2 - FlxG.width / 2, y: plrHurtbox.y + plrHurtbox.height / 2 - FlxG.height / 2}, 1,
-				{ease: FlxEase.expoOut});
+			var mid = plrHurtbox.getMidpoint();
+			FlxTween.tween(camGame.scroll, {x: mid.x - FlxG.width * 0.5, y: mid.y - FlxG.height * 0.5}, 1, {ease: FlxEase.expoOut});
 
 			FlxTween.num(FlxG.timeScale, 0.3, 1, {ease: FlxEase.expoOut}, (num) -> if (isinSpellMode) FlxG.timeScale = num);
 			FlxTween.tween(camGame, {zoom: 1.5}, 1, {ease: FlxEase.expoOut});
