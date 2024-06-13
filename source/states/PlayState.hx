@@ -53,13 +53,13 @@ class PlayState extends FlxState
 		camHud = new FlxCamera();
 
 		FlxG.cameras.reset(camGame);
-		FlxCamera.defaultCameras = [camGame];
-		FlxG.cameras.add(camHud);
+		FlxG.cameras.add(camHud, false);
 
 		camHud.bgColor.alpha = 0;
 		//-----[LV LOADER SHITS]-----\\
 		prefabLoader = new FlxOgmo3Loader('assets/data/SpellbookDungeon.ogmo', 'assets/data/lv_prefabs/start.json');
 		var tilemap:FlxTilemap = prefabLoader.loadTilemap('assets/images/tileset.png', 'Level');
+
 		prefabGrp = new FlxTypedGroup<FlxTilemap>();
 		prefabGrp.add(tilemap);
 
@@ -95,7 +95,8 @@ class PlayState extends FlxState
 
 		//-----[Layering]-----\\
 		add(bg);
-		add(prefabGrp); // add(crosshairLine); pretty broken sorry
+		add(prefabGrp);
+		add(crosshairLine); // pretty broken sorry
 		add(new SpellBook(HEAL));
 
 		add(player);
@@ -122,7 +123,7 @@ class PlayState extends FlxState
 		plrHurtbox.setPosition(player.x + 15, player.y - 125);
 
 		// THIS IS BAD. I HATE THIS. CHEEM. HELP. CHEEEEM. CHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEM
-		camGame.setScrollBoundsRect(plrHurtbox.x - FlxG.width, plrHurtbox.y - FlxG.height, 128000, 72000, true);
+		// camGame.setScrollBoundsRect(plrHurtbox.x - FlxG.width, plrHurtbox.y - FlxG.height, 1280, 720, true);
 
 		spellCastTxt.setPosition(player.x + player.width / 2, player.y - 200);
 
@@ -155,7 +156,9 @@ class PlayState extends FlxState
 				color: 0xFF872341
 			});
 
-		crosshairLine.setPosition(camGame.scroll.x, camGame.scroll.y);
+		@:privateAccess
+		crosshairLine.velocity.copyFrom(player.velocity);
+		crosshairLine.velocity.scale(0.5);
 	}
 
 	var canCastSpell:Bool = true;

@@ -59,10 +59,11 @@ class SpellCastText extends FlxSpriteGroup
 			{
 				if (FlxG.keys.firstJustPressed() == key)
 				{
-					trace(String.fromCharCode(key));
-					curSpell += String.fromCharCode(key);
+					var key = String.fromCharCode(key);
+					trace(key);
+					curSpell += key;
 
-					characters.add(new SpellCharacter(String.fromCharCode(key), 20 * characters.length, y));
+					characters.add(new SpellCharacter(key, 20 * characters.length, y));
 				}
 			}
 		}
