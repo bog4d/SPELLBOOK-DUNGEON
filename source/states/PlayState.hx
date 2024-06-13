@@ -13,11 +13,13 @@ import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
 import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
+import objects.Projectile;
 import objects.SpellBook;
 
 class PlayState extends FlxState
@@ -96,7 +98,6 @@ class PlayState extends FlxState
 		//-----[Layering]-----\\
 		add(bg);
 		add(prefabGrp);
-		add(new SpellBook(HEAL));
 
 		add(player);
 		add(plrHurtbox);
@@ -128,6 +129,7 @@ class PlayState extends FlxState
 
 		HandleCrosshair(elapsed);
 		HandleSpellCasting(elapsed);
+		HandleShooting();
 	}
 
 	var crosshairLerpX:Float;
@@ -220,6 +222,8 @@ class PlayState extends FlxState
 		InvokeSpell(spellCastTxt.curSpell);
 	}
 
+	var isSonicShotInProgress:Bool = false;
+
 	private function InvokeSpell(spell:String):Void
 	{
 		switch (spell.toUpperCase())
@@ -252,14 +256,33 @@ class PlayState extends FlxState
 				if (unlockedSpells[BOUNCE] == false)
 					return;
 			case 'SONICSHOT':
-				if (unlockedSpells[SONIC_SHOT] == false)
+				if (unlockedSpells[SONIC_SHOT] == false || isSonicShotInProgress)
 					return;
+				isSonicShotInProgress = true;
+
+				Projectile.speed *= 2;
+				shootingCooldown = 0.1;
+
+				new FlxTimer().start(5, (tmr) ->
+				{
+					isSonicShotInProgress = false;
+					Projectile.speed /= 2;
+					shootingCooldown = 0.3;
+				});
+
 			case 'TWOXDMG':
 				if (unlockedSpells[DOUBLE_DAMAGE] == false)
 					return;
 			case 'TWOXDEF':
 				if (unlockedSpells[DOUBLE_DEFENCE] == false)
 					return;
+			#if debug
+			case 'UNLOCKALL':
+				for (spell in unlockedSpells.keys())
+					unlockedSpells[spell] = true;
+
+				trace(unlockedSpells);
+			#end
 			default:
 				trace("SPELL DOESNT EXIST!!!");
 		}
@@ -278,6 +301,23 @@ class PlayState extends FlxState
 		for (spell in unlockedSpells)
 		{
 			spell = false;
+		}
+	}
+
+	var canShoot:Bool = true;
+	var shootingCooldown:Float = 0.3;
+
+	private function HandleShooting():Void
+	{
+		if (FlxG.mouse.justPressed && canShoot && !isinSpellMode)
+		{
+			canShoot = false;
+			var projSpawnPos:FlxPoint = new FlxPoint(plrHurtbox.x + plrHurtbox.width / 2, plrHurtbox.y + plrHurtbox.height / 2);
+			var projectile:Projectile = new Projectile(projSpawnPos, FlxG.mouse.getScreenPosition(camGame));
+
+			insert(members.indexOf(player), projectile);
+
+			new FlxTimer().start(shootingCooldown, (tmr) -> canShoot = true);
 		}
 	}
 
