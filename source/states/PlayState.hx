@@ -21,6 +21,7 @@ import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
 import objects.Projectile;
 import objects.SpellBook;
+import openfl.Assets;
 
 class PlayState extends FlxState
 {
@@ -39,6 +40,7 @@ class PlayState extends FlxState
 
 	var prefabLoader:FlxOgmo3Loader;
 	var prefabGrp:FlxTypedGroup<FlxTilemap>;
+	var prefabLoaders:Map<String, FlxOgmo3Loader> = [];
 
 	public static var unlockedSpells:Map<SPELLS_ACTION, Bool> = [
 		EXPLOSION => false, HEAL => false, POISON => false, TELEPORT => false, SPEED_BOOST => false, BURST => false, PIERCER => false, BOUNCE => false,
@@ -58,8 +60,22 @@ class PlayState extends FlxState
 
 		camHud.bgColor.alpha = 0;
 		//-----[LV LOADER SHITS]-----\\
-		prefabLoader = new FlxOgmo3Loader('assets/data/SpellbookDungeon.ogmo', 'assets/data/lv_prefabs/start.json');
+		var map:Map<String, FlxOgmo3Loader> = [];
+
+		var otiles = Assets.list(TEXT).filter((_) -> StringTools.contains(_, "data/lv_prefabs/"));
+
+		for (tile in otiles)
+		{
+			map.set(haxe.io.Path.withoutDirectory(haxe.io.Path.withoutExtension(tile)),
+				new FlxOgmo3Loader('assets/data/SpellbookDungeon.ogmo', 'assets/data/lv_prefabs/start.json'));
+		}
+
+		prefabLoaders = map;
+
+		prefabLoader = map["start"];
 		var tilemap:FlxTilemap = prefabLoader.loadTilemap('assets/images/tileset.png', 'Level');
+
+		prefabLoader.loadEntities(function(_) {}, "Entities");
 
 		prefabGrp = new FlxTypedGroup<FlxTilemap>();
 		prefabGrp.add(tilemap);
