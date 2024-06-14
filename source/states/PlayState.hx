@@ -32,8 +32,8 @@ class PlayState extends FlxState
 {
 	public static var instance:PlayState;
 
-	var camGame:FlxCamera;
-	var camHud:FlxCamera;
+	public var camGame:FlxCamera;
+	public var camHud:FlxCamera;
 
 	var hud:HUD;
 
@@ -280,6 +280,7 @@ class PlayState extends FlxState
 		{
 			case 'KYS', 'KILLYOURSELF', 'DIE':
 				trace('DIE!!!!');
+				player.takeDamage(999);
 			case 'EXPLOSION':
 				if (unlockedSpells[EXPLOSION] == false)
 					return;
@@ -362,10 +363,8 @@ class PlayState extends FlxState
 
 	public function resetProgress():Void
 	{
-		for (spell in unlockedSpells)
-		{
-			spell = false;
-		}
+		for (spell in unlockedSpells.keys())
+			unlockedSpells[spell] = false;
 	}
 
 	var canShoot:Bool = true;
@@ -376,7 +375,7 @@ class PlayState extends FlxState
 		if (FlxG.mouse.justPressed && canShoot && !isinSpellMode)
 		{
 			canShoot = false;
-			var projSpawnPos:FlxPoint = new FlxPoint(plrHurtbox.getMidpoint().x, plrHurtbox.getMidpoint().y);
+			var projSpawnPos:FlxPoint = new FlxPoint(plrHurtbox.getMidpoint().x - 25, plrHurtbox.getMidpoint().y);
 			var projectile:Projectile = new Projectile(projSpawnPos, FlxG.mouse.getScreenPosition(camGame));
 
 			projectileGrp.add(projectile);

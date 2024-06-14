@@ -4,10 +4,14 @@ import components.IKillable;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.effects.FlxFlicker;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+import flixel.tweens.FlxTween;
+import objects.Projectile;
 import states.PlayState;
+import substates.GameOverSubState;
 
 class Player extends FlxSprite implements IKillable
 {
@@ -35,13 +39,24 @@ class Player extends FlxSprite implements IKillable
 
 	var timeSinceSpawn:Float = 0;
 
+	var invincibilityTime:Float = 0;
+
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
 		timeSinceSpawn += elapsed;
+		invincibilityTime -= elapsed;
 
 		HandleMovement(elapsed);
 		HandleLooking();
+
+		FlxG.overlap(this, PlayState.instance.projectileGrp, (plr:IKillable, projectile:Projectile) ->
+		{
+			if (invincibilityTime > 0 || projectile.ignorePlrTime > 0)
+				return;
+			projectile.targetHit();
+			plr.takeDamage(projectile.damage);
+		});
 
 		if (Math.abs(velocity.x) > 5 || Math.abs(velocity.y) > 5)
 		{
@@ -53,9 +68,29 @@ class Player extends FlxSprite implements IKillable
 		}
 	}
 
-	public function takeDamage(dmg:Int):Void {}
+	public function takeDamage(dmg:Int):Void
+	{
+		hp -= dmg;
 
-	public function onDeath():Void {}
+		if (hp <= 0)
+			onDeath();
+
+		invincibilityTime = .7;
+		FlxFlicker.flicker(this, invincibilityTime);
+		FlxTween.shake(this, 0.15, invincibilityTime / 2, XY);
+		FlxTween.color(this, invincibilityTime, 0xFFFF0000, 0xFFFFFFFF);
+		FlxG.camera.shake(0.005, 0.2);
+	}
+
+	public function onDeath():Void
+	{
+		PlayState.instance.resetProgress();
+
+		FlxG.camera.shake(0.05, 0.1);
+		var gameOverSubSub:GameOverSubState = new GameOverSubState();
+		gameOverSubSub.cameras = [PlayState.instance.camHud];
+		PlayState.instance.openSubState(gameOverSubSub);
+	}
 
 	var moveDir:FlxPoint = new FlxPoint(0, 0);
 

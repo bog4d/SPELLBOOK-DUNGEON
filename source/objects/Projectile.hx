@@ -20,6 +20,8 @@ class Projectile extends FlxSprite
 
 	var lifetime:Float = 5; // in case the projectile doesnt hit anything
 
+	public var ignorePlrTime:Float;
+
 	public static var activeEffects:Map<String, Bool> = [
 		'piercer' => false,
 		'bonuce' => false,
@@ -33,6 +35,7 @@ class Projectile extends FlxSprite
 		super();
 		this.clickPoint = clickPoint;
 		damage *= damageMultiplier;
+		ignorePlrTime = activeEffects['sonic_shot'] ? .1 : .15;
 
 		makeGraphic(50, 10, 0xFFFFFFFF);
 
@@ -44,9 +47,12 @@ class Projectile extends FlxSprite
 	}
 
 	// TODO: HANDLE PROJECTILE COLLISIONS ONCE CHEEMS FINISHED THE LEVEL SYSTEM!!!!
+
 	override function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+		ignorePlrTime -= elapsed;
+		ignorePlrTime = FlxMath.bound(ignorePlrTime, 0, 1);
 
 		if (activeEffects['bounce'])
 			FlxG.collide(this, PlayState.instance.enemyGrp,
