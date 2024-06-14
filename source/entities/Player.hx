@@ -1,6 +1,6 @@
 package entities;
 
-import components.IEnemy.IKillable;
+import components.IKillable;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;

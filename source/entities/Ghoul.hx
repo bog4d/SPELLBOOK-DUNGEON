@@ -1,7 +1,7 @@
 package entities;
 
 import components.FSM;
-import components.IEnemy;
+import components.IKillable;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.effects.FlxFlicker;
