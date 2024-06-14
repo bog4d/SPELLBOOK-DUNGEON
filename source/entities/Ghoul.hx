@@ -1,6 +1,7 @@
 package entities;
 
 import components.FSM;
+import components.IEnemy;
 import components.IKillable;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -12,12 +13,14 @@ import flixel.tweens.FlxTween;
 import objects.Projectile;
 import states.PlayState;
 
-class Ghoul extends FlxSprite implements IKillable
+class Ghoul extends FlxSprite implements IKillable implements IEnemy
 {
 	var fsm:FSM;
 
 	public var hp:Int = 100;
 	public var speed:Float = 150; // TODO: INCREASE THE MORE YOU PLAY;
+
+	public var isAggro:Bool = false;
 
 	public function new():Void
 	{
@@ -56,8 +59,6 @@ class Ghoul extends FlxSprite implements IKillable
 			return;
 		}
 
-		fsm.setState(state_aggresive);
-
 		invincibilityTime = 0.5;
 		FlxFlicker.flicker(this, invincibilityTime);
 		FlxTween.shake(this, 0.05, invincibilityTime / 2, XY);
@@ -66,6 +67,12 @@ class Ghoul extends FlxSprite implements IKillable
 	private function onDeath():Void
 	{
 		destroy();
+	}
+
+	override public function destroy():Void
+	{
+		PlayState.instance.enemyGrp.remove(this);
+		super.destroy();
 	}
 
 	// STATES
@@ -98,6 +105,7 @@ class Ghoul extends FlxSprite implements IKillable
 
 	function state_aggresive(elapsed:Float):Void
 	{
+		isAggro = true;
 		FlxVelocity.moveTowardsPoint(this, PlayState.instance.plrHurtbox.getMidpoint(), (invincibilityTime <= 0) ? speed : speed / 2);
 	}
 }

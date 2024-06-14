@@ -1,6 +1,8 @@
 package states;
 
 import components.HUD;
+import components.IEnemy;
+import components.IKillable;
 import components.SpellCastText;
 import entities.Ghoul;
 import entities.Player;
@@ -16,6 +18,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+import flixel.sound.FlxSound;
 import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -41,13 +44,18 @@ class PlayState extends FlxState
 	var crosshair:FlxSprite;
 
 	var prefabLoader:FlxOgmo3Loader;
+	var prefabLoaders:Map<String, FlxOgmo3Loader> = [];
 
 	public var prefabGrp:FlxTypedGroup<FlxTilemap>;
 
 	public var projectileGrp:FlxTypedGroup<Projectile>;
 	public var enemyGrp:FlxGroup;
 
-	var prefabLoaders:Map<String, FlxOgmo3Loader> = [];
+	public var baseMusic:FlxSound;
+	public var calmMusic:FlxSound;
+	public var combatMusic:FlxSound;
+
+	public var isInCombat:Bool = false;
 
 	public static var unlockedSpells:Map<SPELLS_ACTION, Bool> = [
 		EXPLOSION => false, HEAL => false, POISON => false, TELEPORT => false, SPEED_BOOST => false, BURST => false, PIERCER => false, BOUNCE => false,
@@ -90,7 +98,25 @@ class PlayState extends FlxState
 		for (prefab in prefabGrp.members)
 			addTileProprieties(prefab); // read the func comment, vic
 
-		//----------------------------\\
+		//------[LE SOUND]------\\
+
+		baseMusic = new FlxSound().loadEmbedded('assets/music/base.ogg', true);
+		FlxG.sound.list.add(baseMusic);
+		baseMusic.volume = .3;
+		baseMusic.play();
+
+		calmMusic = new FlxSound().loadEmbedded('assets/music/calm_mode.ogg', true);
+		FlxG.sound.list.add(calmMusic);
+		calmMusic.volume = 0;
+		calmMusic.play();
+
+		combatMusic = new FlxSound().loadEmbedded('assets/music/combat_mode.ogg', true);
+		FlxG.sound.list.add(combatMusic);
+		combatMusic.volume = 0;
+		combatMusic.play();
+
+		//-----[Other]-----\\
+
 		hud = new HUD();
 		hud.cameras = [camHud];
 
@@ -157,9 +183,22 @@ class PlayState extends FlxState
 		camGame.setScrollBoundsRect(plrHurtbox.x - FlxG.width * 0.5, plrHurtbox.y - FlxG.height * 0.5, FlxG.width * 2, FlxG.height * 2, true);
 		spellCastTxt.setPosition(player.x + player.width / 2, player.y - 200);
 
+		var aggroCheckArray:Array<Bool> = [];
+		for (enm in enemyGrp)
+		{
+			var _enemy:IEnemy = cast enm;
+			aggroCheckArray.insert(0, _enemy.isAggro);
+		}
+		isInCombat = aggroCheckArray.contains(true);
+
 		HandleCrosshair(elapsed);
 		HandleSpellCasting(elapsed);
 		HandleShooting();
+		HandleMusicStuff(elapsed);
+
+		#if debug
+		FlxG.watch.addQuick('isInCombat', isInCombat);
+		#end
 	}
 
 	var crosshairLerpX:Float;
@@ -222,7 +261,7 @@ class PlayState extends FlxState
 	{
 		isinSpellMode = false;
 		FlxG.timeScale = 1;
-		new FlxTimer().start(1, (tmr) -> canCastSpell = true);
+		new FlxTimer().start(.3, (tmr) -> canCastSpell = true);
 		camGame.follow(plrHurtbox, LOCKON);
 		spellCastTxt.resetText();
 		player.disableMoveInput = spellCastTxt.acceptInput = false;
@@ -343,6 +382,20 @@ class PlayState extends FlxState
 			projectileGrp.add(projectile);
 
 			new FlxTimer().start(shootingCooldown, (tmr) -> canShoot = true);
+		}
+	}
+
+	private function HandleMusicStuff(elapsed:Float):Void
+	{
+		if (isInCombat)
+		{
+			calmMusic.volume -= elapsed;
+			combatMusic.volume += elapsed;
+		}
+		else
+		{
+			calmMusic.volume += elapsed;
+			combatMusic.volume -= elapsed;
 		}
 	}
 
