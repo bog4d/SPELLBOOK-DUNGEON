@@ -336,11 +336,25 @@ class PlayState extends FlxState
 				});
 
 			case 'TWOXDMG':
-				if (unlockedSpells[DOUBLE_DAMAGE] == false)
+				if (unlockedSpells[DOUBLE_DAMAGE] == false && Projectile.damageMultiplier == 1)
 					return;
+
+				Projectile.damageMultiplier = 2;
+
+				new FlxTimer().start(5, (tmr) ->
+				{
+					Projectile.damageMultiplier = 1;
+				});
 			case 'TWOXDEF':
-				if (unlockedSpells[DOUBLE_DEFENCE] == false)
+				if (unlockedSpells[DOUBLE_DEFENCE] == false && player.takeDamageMultiplier == 0.5)
 					return;
+
+				player.takeDamageMultiplier = 0.5;
+
+				new FlxTimer().start(5, (tmr) ->
+				{
+					player.takeDamageMultiplier = 1;
+				});
 			#if debug
 			case 'UNLOCKALL':
 				for (spell in unlockedSpells.keys())

@@ -18,6 +18,8 @@ class Player extends FlxSprite implements IKillable
 	public var hp:Int = 100;
 	public var speed:Float = 300;
 
+	public var takeDamageMultiplier:Float = 1;
+
 	public function new()
 	{
 		super();
@@ -70,7 +72,7 @@ class Player extends FlxSprite implements IKillable
 
 	public function takeDamage(dmg:Int):Void
 	{
-		hp -= dmg;
+		hp -= Std.int(dmg * takeDamageMultiplier);
 
 		if (hp <= 0)
 			onDeath();

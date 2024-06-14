@@ -3,12 +3,15 @@ package components;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
+import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
+import flixel.ui.FlxBar;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
 import objects.SpellBook.SPELLS_ACTION;
+import states.PlayState;
 
 class HUD extends FlxSpriteGroup
 {
@@ -19,6 +22,8 @@ class HUD extends FlxSpriteGroup
 	var spellunlock_bg:FlxSprite;
 	var spellUnlock_header:FlxText;
 	var spellUnlock_description:FlxText;
+
+	var healthBar:FlxBar;
 
 	var spellUnlockDescriptions:Map<SPELLS_ACTION, String> = [
 		EXPLOSION => '"EXPLOSION" Next time you use your wand, it will cause an explosion.\nMake sure you\'re not close!',
@@ -43,6 +48,9 @@ class HUD extends FlxSpriteGroup
 		vignette.antialiasing = true;
 		vignette.scrollFactor.set();
 
+		healthBar = new FlxBar(10, FlxG.height - 50, LEFT_TO_RIGHT, 250, 40, null, null, 0, 100);
+		healthBar.createFilledBar(0xFF0F0305, 0xFFBE3144);
+
 		spellTimeBar = new FlxSprite(0, 25).makeGraphic(1, 25, 0xFFFFFFFF);
 		spellTimeBar.alpha = 0;
 
@@ -65,6 +73,7 @@ class HUD extends FlxSpriteGroup
 
 		//-----[Layering]-----\\
 		add(vignette);
+		add(healthBar);
 		add(spellTimeBar);
 
 		add(spellunlock_bg);
@@ -74,8 +83,12 @@ class HUD extends FlxSpriteGroup
 
 	override function update(elapsed:Float):Void
 	{
+		super.update(elapsed);
+
 		spellTimeBar.screenCenter(X);
 		spellunlock_bg.screenCenter(X);
+
+		healthBar.value = FlxMath.lerp(healthBar.value, PlayState.instance.player.hp, 25 * elapsed);
 
 		/*
 			#if debug

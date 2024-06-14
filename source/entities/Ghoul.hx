@@ -25,6 +25,7 @@ class Ghoul extends FlxSprite implements IKillable implements IEnemy
 	public function new():Void
 	{
 		super();
+		immovable = true;
 
 		fsm = new FSM(state_idle);
 
