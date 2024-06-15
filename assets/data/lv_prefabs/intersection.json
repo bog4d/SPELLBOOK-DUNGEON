@@ -32,7 +32,12 @@
         {"name": "Connector", "id": 5, "_eid": "04873657", "x": 624, "y": 0, "originX": 0, "originY": 0},
         {"name": "Connector", "id": 6, "_eid": "04873657", "x": 1248, "y": 624, "originX": 0, "originY": 0},
         {"name": "Connector", "id": 7, "_eid": "04873657", "x": 0, "y": 624, "originX": 0, "originY": 0},
-        {"name": "Connector", "id": 8, "_eid": "04873657", "x": 624, "y": 1248, "originX": 0, "originY": 0}
+        {"name": "Connector", "id": 8, "_eid": "04873657", "x": 624, "y": 1248, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 9, "_eid": "45997652", "x": 352, "y": 368, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 10, "_eid": "45997652", "x": 912, "y": 368, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 11, "_eid": "45997652", "x": 608, "y": 640, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 12, "_eid": "45997652", "x": 864, "y": 896, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 13, "_eid": "45997652", "x": 368, "y": 896, "originX": 0, "originY": 0}
       ]
     }
   ]

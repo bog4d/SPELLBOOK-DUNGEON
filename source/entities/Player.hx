@@ -60,6 +60,8 @@ class Player extends FlxSprite implements IKillable
 			plr.takeDamage(projectile.damage);
 		});
 
+		scale.x = FlxMath.lerp(scale.x, .3, 20 * elapsed);
+
 		if (Math.abs(velocity.x) > 5 || Math.abs(velocity.y) > 5)
 		{
 			scale.y = FlxMath.lerp(scale.y, .3 + Math.sin(timeSinceSpawn * 20) / 50, 15 * elapsed);
@@ -72,6 +74,9 @@ class Player extends FlxSprite implements IKillable
 
 	public function takeDamage(dmg:Int):Void
 	{
+		if (invincibilityTime > 0)
+			return;
+
 		hp -= Std.int(dmg * takeDamageMultiplier);
 
 		if (hp <= 0)
@@ -92,6 +97,24 @@ class Player extends FlxSprite implements IKillable
 		var gameOverSubSub:GameOverSubState = new GameOverSubState();
 		gameOverSubSub.cameras = [PlayState.instance.camHud];
 		PlayState.instance.openSubState(gameOverSubSub);
+	}
+
+	public function heal(healHp:Int):Void
+	{
+		hp += healHp;
+
+		FlxTween.color(this, invincibilityTime, 0xFF00FF2A, 0xFFFFFFFF);
+		PlayState.instance.camHud.flash(0x0B00FF2A, 1);
+
+		if (hp > 100)
+			hp = 100;
+	}
+
+	public function teleportToPos(newPos:FlxPoint):Void
+	{
+		setPosition(newPos.x, newPos.y);
+		PlayState.instance.player.scale.set(1, 0.01);
+		PlayState.instance.camGame.fade(0xFF000000, 0.3, true, true);
 	}
 
 	var moveDir:FlxPoint = new FlxPoint(0, 0);

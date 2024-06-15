@@ -326,13 +326,21 @@ class PlayState extends FlxState
 			case 'HEAL':
 				if (unlockedSpells[HEAL] == false)
 					return;
-				trace('gain sum more hp hehe');
+				PlayState.instance.player.heal(10);
 			case 'POISON':
 				if (unlockedSpells[POISON] == false)
 					return;
 			case 'TELEPORT':
-				if (unlockedSpells[TELEPORT] == false)
+				return; // probbb not for the jam. Too buggy.
+				if (unlockedSpells[TELEPORT] == false || Projectile.activeEffects['teleport'])
 					return;
+
+				Projectile.activeEffects['teleport'] = true;
+
+				new FlxTimer().start(5, (tmr) ->
+				{
+					Projectile.activeEffects['teleport'] = false;
+				});
 			case 'SPEEDBOOST':
 				if (unlockedSpells[SPEED_BOOST] == false)
 					return;
