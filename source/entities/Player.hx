@@ -60,6 +60,8 @@ class Player extends FlxSprite implements IKillable
 			plr.takeDamage(projectile.damage);
 		});
 
+		scale.x = FlxMath.lerp(scale.x, .3, 20 * elapsed);
+
 		if (Math.abs(velocity.x) > 5 || Math.abs(velocity.y) > 5)
 		{
 			scale.y = FlxMath.lerp(scale.y, .3 + Math.sin(timeSinceSpawn * 20) / 50, 15 * elapsed);
@@ -106,6 +108,13 @@ class Player extends FlxSprite implements IKillable
 
 		if (hp > 100)
 			hp = 100;
+	}
+
+	public function teleportToPos(newPos:FlxPoint):Void
+	{
+		setPosition(newPos.x, newPos.y);
+		PlayState.instance.player.scale.set(1, 0.01);
+		PlayState.instance.camGame.fade(0xFF000000, 0.3, true, true);
 	}
 
 	var moveDir:FlxPoint = new FlxPoint(0, 0);

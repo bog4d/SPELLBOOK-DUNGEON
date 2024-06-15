@@ -27,7 +27,8 @@ class Projectile extends FlxSprite
 		'bonuce' => false,
 		'explosion' => false,
 		'poison' => false,
-		'sonic_shot' => false
+		'sonic_shot' => false,
+		'teleport' => false,
 	];
 
 	public function new(spawnPos:FlxPoint, clickPoint:FlxPoint):Void
@@ -62,6 +63,11 @@ class Projectile extends FlxSprite
 
 		FlxG.collide(this, PlayState.instance.prefabGrp, (projectile:Projectile, prefab) ->
 		{
+			if (activeEffects['teleport'])
+			{
+				PlayState.instance.player.teleportToPos(getMidpoint());
+			}
+
 			if (activeEffects['bounce'])
 			{
 				projectile.angle = FlxAngle.TO_DEG * Math.atan2(velocity.x / speed, -(velocity.y / speed)) - 90;
@@ -80,14 +86,20 @@ class Projectile extends FlxSprite
 
 	public function targetHit():Void
 	{
-		if (activeEffects['bounce'])
-			return;
+		if (activeEffects['teleport'])
+		{
+			PlayState.instance.player.teleportToPos(getMidpoint());
+		}
+
 		if (activeEffects['piercer'] == true && remainingPierces > 0)
 		{
 			remainingPierces--;
 		}
 		else
 		{
+			if (activeEffects['bounce'])
+				return;
+
 			destroy();
 		}
 	}
