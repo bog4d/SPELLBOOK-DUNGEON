@@ -81,8 +81,7 @@ class PlayState extends FlxState
 
 		for (tile in otiles)
 		{
-			map.set(haxe.io.Path.withoutDirectory(haxe.io.Path.withoutExtension(tile)),
-				new FlxOgmo3Loader('assets/data/SpellbookDungeon.ogmo', 'assets/data/lv_prefabs/start.json'));
+			map.set(haxe.io.Path.withoutDirectory(haxe.io.Path.withoutExtension(tile)), new FlxOgmo3Loader('assets/data/SpellbookDungeon.ogmo', tile));
 		}
 
 		prefabLoaders = map;
@@ -90,20 +89,31 @@ class PlayState extends FlxState
 		prefabLoader = map["start"];
 		var tilemap:FlxTilemap = prefabLoader.loadTilemap('assets/images/tileset.png', 'Level');
 
-		prefabLoader.loadEntities(function(_) {}, "Entities");
-
 		prefabGrp = new FlxTypedGroup<FlxTilemap>();
 		prefabGrp.add(tilemap);
+
+		// loadRoom("Corridor-Vertical", tilemap);
+
+		// @:privateAccess
+		// prefabLoader.loadEntities(function(_)
+		// {
+		// 	var level = prefabLoader.level;
+		// 	@:privateAccess
+		// 	var oldW = prefabLoader.level.width;
+		// 	var oldH = prefabLoader.level.height;
+		// 	prefabLoader = map["Corridor-Vertical"];
+		// 	var tl = prefabLoader.loadTilemap('assets/images/tileset.png', 'Level');
+
+		// 	// trace(tilemap);
+		// 	tl.x = 0.15384615384615384615384615384615;
+		// 	// tl.y = -(128 * 4);
+		// 	prefabGrp.add(tl);
+		// }, "Entities");
 
 		for (prefab in prefabGrp.members)
 			addTileProprieties(prefab); // read the func comment, vic
 
 		//------[LE SOUND]------\\
-
-		baseMusic = new FlxSound().loadEmbedded('assets/music/base.ogg', true);
-		FlxG.sound.list.add(baseMusic);
-		baseMusic.volume = .3;
-		baseMusic.play();
 
 		calmMusic = new FlxSound().loadEmbedded('assets/music/calm_mode.ogg', true);
 		FlxG.sound.list.add(calmMusic);
@@ -114,6 +124,12 @@ class PlayState extends FlxState
 		FlxG.sound.list.add(combatMusic);
 		combatMusic.volume = 0;
 		combatMusic.play();
+
+		baseMusic = new FlxSound().loadEmbedded('assets/music/base.ogg', true);
+		FlxG.sound.list.add(baseMusic);
+		baseMusic.volume = .3;
+		// baseMusic.endTime = baseMusic.length - 10;
+		baseMusic.play();
 
 		//-----[Other]-----\\
 
@@ -169,11 +185,34 @@ class PlayState extends FlxState
 		camGame.bgColor = 0xFF353535;
 	}
 
+	/*
+		function loadRoom(room:String, tilemap:FlxTilemap)
+		{
+			@:privateAccess
+			if (true)
+			{
+				var level = prefabLoader.level;
+				var entities = FlxOgmo3Loader.getEntityLayer(level, "Entities");
+
+				for (entity in entities.entities)
+				{
+					prefabLoader = prefabLoaders[room];
+					var tl = prefabLoader.loadTilemap('assets/images/tileset.png', 'Level');
+
+					tl.x = (entities.gridCellWidth + entities.gridCellsX) / entity.x;
+					tl.y = -288;
+					trace(tl.getPosition());
+
+					prefabGrp.add(tl);
+				}
+			}
+		}
+	 */
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		FlxG.collide(player, prefabGrp);
 		FlxG.collide(enemyGrp, prefabGrp);
+		FlxG.collide(player, prefabGrp);
 
 		camGame.followLerp = 5 * elapsed;
 		plrHurtbox.setPosition(player.x + 15, player.y - 125);
@@ -408,6 +447,11 @@ class PlayState extends FlxState
 
 	private function HandleMusicStuff(elapsed:Float):Void
 	{
+		// redirect the time to the normal one in cae
+		if (calmMusic.time != baseMusic.time)
+			calmMusic.time = baseMusic.time;
+		if (combatMusic.time != baseMusic.time)
+			combatMusic.time = combatMusic.time;
 		if (isInCombat)
 		{
 			calmMusic.volume -= elapsed;
