@@ -287,7 +287,7 @@ class PlayState extends FlxState
 			case 'HEAL':
 				if (unlockedSpells[HEAL] == false)
 					return;
-				trace('gain sum more hp hehe');
+				PlayState.instance.player.heal(10);
 			case 'POISON':
 				if (unlockedSpells[POISON] == false)
 					return;

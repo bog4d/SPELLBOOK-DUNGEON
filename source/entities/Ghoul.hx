@@ -19,6 +19,7 @@ class Ghoul extends FlxSprite implements IKillable implements IEnemy
 
 	public var hp:Int = 100;
 	public var speed:Float = 150; // TODO: INCREASE THE MORE YOU PLAY;
+	public var dmg:Int = 25; // TODO: INCREASE THE MORE YOU PLAY;
 
 	public var isAggro:Bool = false;
 
@@ -38,6 +39,10 @@ class Ghoul extends FlxSprite implements IKillable implements IEnemy
 	{
 		fsm.update(elapsed);
 		super.update(elapsed);
+		if (FlxG.overlap(this, PlayState.instance.plrHurtbox))
+		{
+			PlayState.instance.player.takeDamage(dmg);
+		}
 
 		invincibilityTime -= elapsed;
 		invincibilityTime = FlxMath.bound(invincibilityTime, 0, 999);

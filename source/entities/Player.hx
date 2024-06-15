@@ -72,6 +72,9 @@ class Player extends FlxSprite implements IKillable
 
 	public function takeDamage(dmg:Int):Void
 	{
+		if (invincibilityTime > 0)
+			return;
+
 		hp -= Std.int(dmg * takeDamageMultiplier);
 
 		if (hp <= 0)
@@ -92,6 +95,17 @@ class Player extends FlxSprite implements IKillable
 		var gameOverSubSub:GameOverSubState = new GameOverSubState();
 		gameOverSubSub.cameras = [PlayState.instance.camHud];
 		PlayState.instance.openSubState(gameOverSubSub);
+	}
+
+	public function heal(healHp:Int):Void
+	{
+		hp += healHp;
+
+		FlxTween.color(this, invincibilityTime, 0xFF00FF2A, 0xFFFFFFFF);
+		PlayState.instance.camHud.flash(0x0B00FF2A, 1);
+
+		if (hp > 100)
+			hp = 100;
 	}
 
 	var moveDir:FlxPoint = new FlxPoint(0, 0);
