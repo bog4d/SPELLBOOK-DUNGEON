@@ -470,21 +470,28 @@ class PlayState extends FlxState
 	private function addTileProprieties(tilemap:FlxTilemap):Void
 	{
 		tilemap.setTileProperties(1, NONE);
-		tilemap.setTileProperties(3, ANY);
-		tilemap.setTileProperties(4, ANY);
-		tilemap.setTileProperties(5, ANY);
-		tilemap.setTileProperties(11, ANY);
-		tilemap.setTileProperties(12, ANY);
-		tilemap.setTileProperties(13, ANY);
-
 		tilemap.setTileProperties(8, NONE);
 		tilemap.setTileProperties(9, NONE);
 		tilemap.setTileProperties(10, NONE);
+		tilemap.setTileProperties(11, NONE);
+		tilemap.setTileProperties(12, NONE);
 		tilemap.setTileProperties(16, NONE);
 		tilemap.setTileProperties(17, ANY); // INVISIBLE TO THE PLAYER!!
 		tilemap.setTileProperties(18, NONE);
+		tilemap.setTileProperties(19, NONE);
+		tilemap.setTileProperties(20, NONE);
 		tilemap.setTileProperties(24, NONE);
 		tilemap.setTileProperties(25, NONE);
 		tilemap.setTileProperties(26, NONE);
+
+		tilemap.setTileProperties(13, ANY);
+		tilemap.setTileProperties(14, ANY);
+		tilemap.setTileProperties(15, ANY);
+		tilemap.setTileProperties(21, ANY);
+		tilemap.setTileProperties(22, ANY);
+		tilemap.setTileProperties(23, ANY);
+		tilemap.setTileProperties(29, ANY);
+		tilemap.setTileProperties(30, ANY);
+		tilemap.setTileProperties(31, ANY);
 	}
 }
