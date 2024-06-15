@@ -30,7 +30,15 @@
       "gridCellsY": 72,
       "entities": [
         {"name": "Connector", "id": 0, "_eid": "04873657", "x": 1504, "y": 624, "originX": 0, "originY": 0},
-        {"name": "Connector", "id": 1, "_eid": "04873657", "x": 0, "y": 624, "originX": 0, "originY": 0}
+        {"name": "Connector", "id": 1, "_eid": "04873657", "x": 0, "y": 624, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 2, "_eid": "45997652", "x": 352, "y": 368, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 3, "_eid": "45997652", "x": 752, "y": 368, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 4, "_eid": "45997652", "x": 1152, "y": 368, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 5, "_eid": "45997652", "x": 1168, "y": 624, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 6, "_eid": "45997652", "x": 352, "y": 656, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 7, "_eid": "45997652", "x": 352, "y": 912, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 8, "_eid": "45997652", "x": 752, "y": 896, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 9, "_eid": "45997652", "x": 1168, "y": 896, "originX": 0, "originY": 0}
       ]
     }
   ]

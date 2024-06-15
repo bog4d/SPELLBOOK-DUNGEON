@@ -29,7 +29,12 @@
       "gridCellsX": 80,
       "gridCellsY": 56,
       "entities": [
-        {"name": "Connector", "id": 0, "_eid": "04873657", "x": 752, "y": 0, "originX": 0, "originY": 0}
+        {"name": "Connector", "id": 0, "_eid": "04873657", "x": 752, "y": 0, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 1, "_eid": "45997652", "x": 256, "y": 368, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 2, "_eid": "45997652", "x": 352, "y": 576, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 3, "_eid": "45997652", "x": 512, "y": 384, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 4, "_eid": "45997652", "x": 624, "y": 608, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 5, "_eid": "45997652", "x": 768, "y": 400, "originX": 0, "originY": 0}
       ]
     }
   ]

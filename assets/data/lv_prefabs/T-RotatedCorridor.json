@@ -31,7 +31,10 @@
       "entities": [
         {"name": "Connector", "id": 0, "_eid": "04873657", "x": 256, "y": 480, "originX": 0, "originY": 0},
         {"name": "Connector", "id": 1, "_eid": "04873657", "x": 624, "y": 0, "originX": 0, "originY": 0},
-        {"name": "Connector", "id": 2, "_eid": "04873657", "x": 624, "y": 992, "originX": 0, "originY": 0}
+        {"name": "Connector", "id": 2, "_eid": "04873657", "x": 624, "y": 992, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 3, "_eid": "45997652", "x": 640, "y": 496, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 4, "_eid": "45997652", "x": 624, "y": 144, "originX": 0, "originY": 0},
+        {"name": "Enemy", "id": 5, "_eid": "45997652", "x": 624, "y": 848, "originX": 0, "originY": 0}
       ]
     }
   ]
