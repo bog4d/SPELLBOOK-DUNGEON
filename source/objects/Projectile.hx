@@ -58,9 +58,12 @@ class Projectile extends FlxSprite
 		ignorePlrTime -= elapsed;
 		ignorePlrTime = FlxMath.bound(ignorePlrTime, 0, 1);
 
-		if (actEff['bounce'])
-			FlxG.collide(this, PlayState.instance.enemyGrp,
-				(_:Projectile, two:FlxObject) -> _.angle = FlxAngle.TO_DEG * Math.atan2(velocity.x / speed, -(velocity.y / speed)) - 90);
+		/*
+			//only works when enemy is immovable, which causes collision issues
+				if (actEff['bounce'])
+					FlxG.collide(this, PlayState.instance.enemyGrp,
+						(_:Projectile, two:FlxObject) -> _.angle = FlxAngle.TO_DEG * Math.atan2(velocity.x / speed, -(velocity.y / speed)) - 90);
+		 */
 
 		elasticity = actEff['bounce'] ? 1 : 0;
 

@@ -29,7 +29,7 @@ class Player extends FlxSprite implements IKillable
 		updateHitbox();
 		height = 10;
 		width -= 25;
-		immovable = true;
+		// immovable = true; bro u broke the collision by adding this line LMAO
 
 		origin.y += 300;
 		offset.y += 360;
@@ -69,14 +69,14 @@ class Player extends FlxSprite implements IKillable
 
 		scale.x = FlxMath.lerp(scale.x, .3, 20 * elapsed);
 
-		// if (Math.abs(velocity.x) > 5 || Math.abs(velocity.y) > 5)
-		// {
-		// 	scale.y = FlxMath.lerp(scale.y, .3 + Math.sin(timeSinceSpawn * 20) / 50, 20 * elapsed);
-		// }
-		// else
-		// {
-		scale.y = FlxMath.lerp(scale.y, .3 + Math.sin(timeSinceSpawn * 2) / 100, 20 * elapsed);
-		// }
+		if (Math.abs(velocity.x) > 5 || Math.abs(velocity.y) > 5)
+		{
+			scale.y = FlxMath.lerp(scale.y, .3 + Math.sin(timeSinceSpawn * 15) / 75, 20 * elapsed);
+		}
+		else
+		{
+			scale.y = FlxMath.lerp(scale.y, .3 + Math.sin(timeSinceSpawn * 2) / 100, 20 * elapsed);
+		}
 	}
 
 	public function takeDamage(dmg:Int):Void

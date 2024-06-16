@@ -6,6 +6,7 @@ import components.IKillable;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.effects.FlxFlicker;
+import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxVelocity;
@@ -26,11 +27,17 @@ class Slime extends FlxSprite implements IKillable implements IEnemy
 	public function new():Void
 	{
 		super();
-		immovable = true;
+		// immovable = true;
 
+		frames = FlxAtlasFrames.fromSparrow('assets/images/characters/slime/Slime.png', 'assets/images/characters/slime/Slime.xml');
+		animation.addByPrefix('Idle', 'Slime', 10, true);
+		animation.play('Idle');
+
+		scale.set(.3, .3);
+		updateHitbox();
+
+		antialiasing = true;
 		fsm = new FSM(state_idle);
-
-		makeGraphic(50, 50, 0xFFFF0000);
 	}
 
 	var invincibilityTime:Float = 0;
@@ -39,7 +46,6 @@ class Slime extends FlxSprite implements IKillable implements IEnemy
 	{
 		fsm.update(elapsed);
 		super.update(elapsed);
-		FlxG.collide(this, PlayState.instance.level);
 
 		if (FlxG.overlap(this, PlayState.instance.plrHurtbox))
 		{
@@ -54,7 +60,7 @@ class Slime extends FlxSprite implements IKillable implements IEnemy
 			if (invincibilityTime > 0)
 				return;
 			projectile.targetHit();
-			enemy.takeDamage(projectile.damage * projectile.damage);
+			enemy.takeDamage(projectile.damage);
 		});
 	}
 
@@ -97,7 +103,7 @@ class Slime extends FlxSprite implements IKillable implements IEnemy
 			idlePos.y += FlxG.random.float(-250, 250);
 		}
 		FlxVelocity.moveTowardsPoint(this, idlePos, 50);
-		if (getPosition().distanceTo(PlayState.instance.plrHurtbox.getMidpoint()) < 300)
+		if (getPosition().distanceTo(PlayState.instance.plrHurtbox.getMidpoint()) < 500)
 		{
 			if (PlayState.instance.level.ray(this.getMidpoint(), PlayState.instance.player.getMidpoint()))
 			{
@@ -109,6 +115,7 @@ class Slime extends FlxSprite implements IKillable implements IEnemy
 	function state_aggresive(elapsed:Float):Void
 	{
 		isAggro = true;
+		animation.curAnim.frameRate = 24;
 		FlxVelocity.moveTowardsPoint(this, PlayState.instance.plrHurtbox.getMidpoint(), (invincibilityTime <= 0) ? speed : speed / 2);
 	}
 }
