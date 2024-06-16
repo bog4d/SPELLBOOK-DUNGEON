@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="Projectile.png">
+	<!-- Created with Adobe Animate version 22.0.2.168 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Export instancia 10000" x="2" y="2" width="137" height="82" frameX="0" frameY="0" frameWidth="137" frameHeight="84"/>
+	<SubTexture name="Export instancia 10001" x="298" y="2" width="130" height="82" frameX="-7" frameY="0" frameWidth="137" frameHeight="84"/>
+	<SubTexture name="Export instancia 10002" x="154" y="2" width="129" height="84" frameX="-7" frameY="0" frameWidth="137" frameHeight="84"/>
+	<SubTexture name="Export instancia 10003" x="298" y="99" width="122" height="84" frameX="-14" frameY="0" frameWidth="137" frameHeight="84"/>
+	<SubTexture name="Export instancia 10004" x="153" y="101" width="122" height="79" frameX="-14" frameY="-1" frameWidth="137" frameHeight="84"/>
+	<SubTexture name="Export instancia 10005" x="2" y="99" width="136" height="79" frameX="0" frameY="-1" frameWidth="137" frameHeight="84"/>
+</TextureAtlas>
