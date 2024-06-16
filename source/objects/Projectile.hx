@@ -35,7 +35,7 @@ class Projectile extends FlxSprite
 
 	public function new(spawnPos:FlxPoint, clickPoint:FlxPoint):Void
 	{
-		super();
+		super(spawnPos.x, spawnPos.y);
 		actEff = activeEffects.copy();
 		this.clickPoint = clickPoint;
 		damage *= damageMultiplier;
@@ -44,7 +44,6 @@ class Projectile extends FlxSprite
 		makeGraphic(50, 10, 0xFFFFFFFF);
 
 		// lookAt(clickPoint)
-		setPosition(spawnPos.x, spawnPos.y);
 
 		angle = FlxAngle.angleBetweenMouse(this, true);
 		velocity = FlxVelocity.velocityFromAngle(angle, speed);
@@ -64,7 +63,6 @@ class Projectile extends FlxSprite
 				_.angle = FlxAngle.TO_DEG * Math.atan2(velocity.x / speed, -(velocity.y / speed)) - 90;
 				velocity = FlxVelocity.velocityFromAngle(angle, speed);
 			});
-
 		elasticity = actEff['bounce'] ? 1 : 0;
 
 		FlxG.collide(this, PlayState.instance.level, (projectile:Projectile, prefab) ->
