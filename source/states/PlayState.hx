@@ -19,6 +19,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
 import flixel.math.FlxAngle;
 import flixel.math.FlxMath;
+import flixel.math.FlxMatrix;
 import flixel.math.FlxPoint;
 import flixel.sound.FlxSound;
 import flixel.tile.FlxTilemap;
@@ -48,7 +49,7 @@ class PlayState extends FlxState
 
 	public var player:Player;
 
-	var hand:FlxSprite;
+	public var hand:FlxSprite;
 
 	public var plrHurtbox:FlxObject;
 
@@ -189,7 +190,7 @@ class PlayState extends FlxState
 					hand.setPosition(player.x + player.width, player.y - 60);
 
 					hand.origin.x -= (hand.width + 20) * 3;
-					hand.x += Math.abs(hand.origin.x) * 1.5;
+					hand.x += Math.abs(hand.origin.x) * 1.3;
 				case 'Enemy':
 					var _slime:Slime = new Slime();
 					_slime.setPosition(ent.x - _slime.width / 2, ent.y - _slime.height / 2);
@@ -216,7 +217,7 @@ class PlayState extends FlxState
 		super.update(elapsed);
 		FlxG.collide(enemyGrp, level);
 		// FlxG.collide(enemyGrp, enemyGrp);
-		FlxG.collide(player, level);
+		FlxG.collide(player, level, function(pl, lvl) {});
 
 		camGame.followLerp = 5 * elapsed;
 		plrHurtbox.setPosition(player.x + 15, player.y - 125);

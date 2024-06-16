@@ -128,6 +128,7 @@ class Player extends FlxSprite implements IKillable
 	{
 		setPosition(newPos.x, newPos.y);
 		PlayState.instance.player.scale.set(1, 0.01);
+		PlayState.instance.hand.setPosition(newPos.x, newPos.y);
 		PlayState.instance.camGame.fade(0xFF000000, 0.3, true, true);
 	}
 
