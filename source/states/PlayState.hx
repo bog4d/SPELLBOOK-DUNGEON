@@ -4,8 +4,8 @@ import components.HUD;
 import components.IEnemy;
 import components.IKillable;
 import components.SpellCastText;
-import entities.Ghoul;
 import entities.Player;
+import entities.Slime;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -43,10 +43,8 @@ class PlayState extends FlxState
 	var spellCastTxt:SpellCastText;
 	var crosshair:FlxSprite;
 
-	var prefabLoader:FlxOgmo3Loader;
-	var prefabLoaders:Map<String, FlxOgmo3Loader> = [];
-
-	public var prefabGrp:FlxTypedGroup<FlxTilemap>;
+	public var levelLoader:FlxOgmo3Loader;
+	public var level:FlxTilemap;
 
 	public var projectileGrp:FlxTypedGroup<Projectile>;
 	public var enemyGrp:FlxGroup;
@@ -75,43 +73,10 @@ class PlayState extends FlxState
 
 		camHud.bgColor.alpha = 0;
 		//-----[LV LOADER SHITS]-----\\
-		var map:Map<String, FlxOgmo3Loader> = [];
-
-		var otiles = Assets.list(TEXT).filter((_) -> StringTools.contains(_, "data/lv_prefabs/"));
-
-		for (tile in otiles)
-		{
-			map.set(haxe.io.Path.withoutDirectory(haxe.io.Path.withoutExtension(tile)), new FlxOgmo3Loader('assets/data/SpellbookDungeon.ogmo', tile));
-		}
-
-		prefabLoaders = map;
-
-		prefabLoader = map["start"];
-		var tilemap:FlxTilemap = prefabLoader.loadTilemap('assets/images/tileset.png', 'Level');
-
-		prefabGrp = new FlxTypedGroup<FlxTilemap>();
-		prefabGrp.add(tilemap);
-
-		// loadRoom("Corridor-Vertical", tilemap);
-
-		// @:privateAccess
-		// prefabLoader.loadEntities(function(_)
-		// {
-		// 	var level = prefabLoader.level;
-		// 	@:privateAccess
-		// 	var oldW = prefabLoader.level.width;
-		// 	var oldH = prefabLoader.level.height;
-		// 	prefabLoader = map["Corridor-Vertical"];
-		// 	var tl = prefabLoader.loadTilemap('assets/images/tileset.png', 'Level');
-
-		// 	// trace(tilemap);
-		// 	tl.x = 0.15384615384615384615384615384615;
-		// 	// tl.y = -(128 * 4);
-		// 	prefabGrp.add(tl);
-		// }, "Entities");
-
-		for (prefab in prefabGrp.members)
-			addTileProprieties(prefab); // read the func comment, vic
+		levelLoader = new FlxOgmo3Loader('assets/data/SpellbookDungeon.ogmo', 'assets/data/levels/lv_3.json');
+		level = levelLoader.loadTilemap('assets/images/tileset.png', 'Level');
+		level.follow(camGame);
+		addTileProprieties(level);
 
 		//------[LE SOUND]------\\
 
@@ -153,10 +118,10 @@ class PlayState extends FlxState
 
 		enemyGrp = new FlxGroup();
 
-		var ghoul = new Ghoul();
-		ghoul.screenCenter();
-		ghoul.y -= 500;
-		enemyGrp.add(ghoul);
+		var slime = new Slime();
+		slime.screenCenter();
+		slime.y -= 500;
+		enemyGrp.add(slime);
 
 		final gridGraphic = FlxGridOverlay.createGrid(64, 64, 128, 128, true, 0xFF0E0E0E, 0xFF222222);
 		var bg = new FlxBackdrop(gridGraphic, XY);
@@ -166,7 +131,7 @@ class PlayState extends FlxState
 
 		//-----[Layering]-----\\
 		add(bg);
-		add(prefabGrp);
+		add(level);
 
 		add(enemyGrp);
 		add(projectileGrp);
@@ -182,44 +147,34 @@ class PlayState extends FlxState
 		camGame.follow(plrHurtbox, LOCKON, 1);
 		super.create();
 
+		levelLoader.loadEntities((ent:EntityData) ->
+		{
+			switch (ent.name)
+			{
+				case 'PlayerSpawn':
+					player.setPosition(ent.x - player.width / 2, ent.y - player.height / 2);
+				case 'Enemy':
+					var _slime:Slime = new Slime();
+					_slime.setPosition(ent.x - _slime.width / 2, ent.y - _slime.height / 2);
+					enemyGrp.add(_slime);
+				case 'SpellbookSpawner':
+					var _spellBook:SpellBook = new SpellBook(SPELLS_ACTION.createByName(ent.values.SPELL));
+					_spellBook.setPosition(ent.x - _spellBook.width / 2, ent.y - _spellBook.height / 2);
+
+					insert(members.indexOf(enemyGrp), _spellBook);
+			}
+		}, 'Entities');
 		camGame.bgColor = 0xFF353535;
 	}
 
-	/*
-		function loadRoom(room:String, tilemap:FlxTilemap)
-		{
-			@:privateAccess
-			if (true)
-			{
-				var level = prefabLoader.level;
-				var entities = FlxOgmo3Loader.getEntityLayer(level, "Entities");
-
-				for (entity in entities.entities)
-				{
-					prefabLoader = prefabLoaders[room];
-					var tl = prefabLoader.loadTilemap('assets/images/tileset.png', 'Level');
-
-					tl.x = (entities.gridCellWidth + entities.gridCellsX) / entity.x;
-					tl.y = -288;
-					trace(tl.getPosition());
-
-					prefabGrp.add(tl);
-				}
-			}
-		}
-	 */
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		FlxG.collide(enemyGrp, prefabGrp);
-		FlxG.collide(player, prefabGrp);
+		FlxG.collide(player, level);
 
 		camGame.followLerp = 5 * elapsed;
 		plrHurtbox.setPosition(player.x + 15, player.y - 125);
 
-		// THIS IS BAD. I HATE THIS. CHEEM. HELP. CHEEEEM. CHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEM
-		// *superman pose gif meme with Starman by David Bowie playing in the background* - Cheems
-		camGame.setScrollBoundsRect(plrHurtbox.x - FlxG.width * 0.5, plrHurtbox.y - FlxG.height * 0.5, FlxG.width * 2, FlxG.height * 2, true);
 		spellCastTxt.setPosition(player.x + player.width / 2, player.y - 200);
 
 		var aggroCheckArray:Array<Bool> = [];
@@ -464,9 +419,6 @@ class PlayState extends FlxState
 		}
 	}
 
-	// VIC! Read this: Im guessing since we'll have multiple tilemaps, we still need to
-	// add tile proprieties to each one of them. So just use this function on every one of them-
-	// oooor if you have a better idea, be my guest! As long as it makes ur job easier...
 	private function addTileProprieties(tilemap:FlxTilemap):Void
 	{
 		tilemap.setTileProperties(1, NONE);

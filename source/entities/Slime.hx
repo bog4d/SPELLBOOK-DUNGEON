@@ -13,7 +13,7 @@ import flixel.tweens.FlxTween;
 import objects.Projectile;
 import states.PlayState;
 
-class Ghoul extends FlxSprite implements IKillable implements IEnemy
+class Slime extends FlxSprite implements IKillable implements IEnemy
 {
 	var fsm:FSM;
 
@@ -39,6 +39,8 @@ class Ghoul extends FlxSprite implements IKillable implements IEnemy
 	{
 		fsm.update(elapsed);
 		super.update(elapsed);
+		FlxG.collide(this, PlayState.instance.level);
+
 		if (FlxG.overlap(this, PlayState.instance.plrHurtbox))
 		{
 			PlayState.instance.player.takeDamage(dmg);
@@ -52,7 +54,7 @@ class Ghoul extends FlxSprite implements IKillable implements IEnemy
 			if (invincibilityTime > 0)
 				return;
 			projectile.targetHit();
-			enemy.takeDamage(projectile.damage);
+			enemy.takeDamage(projectile.damage * projectile.damage);
 		});
 	}
 
@@ -97,14 +99,9 @@ class Ghoul extends FlxSprite implements IKillable implements IEnemy
 		FlxVelocity.moveTowardsPoint(this, idlePos, 50);
 		if (getPosition().distanceTo(PlayState.instance.plrHurtbox.getMidpoint()) < 300)
 		{
-			for (prefab in PlayState.instance.prefabGrp)
+			if (PlayState.instance.level.ray(this.getMidpoint(), PlayState.instance.player.getMidpoint()))
 			{
-				// This is definitely going to be hard to process the more prefabs there exist
-				// Cheems im actually so fucking sorry but i want to finis hthis gamejam so im sorry
-				if (prefab.ray(this.getMidpoint(), PlayState.instance.player.getMidpoint()))
-				{
-					fsm.setState(state_aggresive);
-				}
+				fsm.setState(state_aggresive);
 			}
 		}
 	}

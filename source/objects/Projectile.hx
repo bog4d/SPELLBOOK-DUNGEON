@@ -61,7 +61,7 @@ class Projectile extends FlxSprite
 
 		elasticity = activeEffects['bounce'] ? 1 : 0;
 
-		FlxG.collide(this, PlayState.instance.prefabGrp, (projectile:Projectile, prefab) ->
+		FlxG.collide(this, PlayState.instance.level, (projectile:Projectile, prefab) ->
 		{
 			if (activeEffects['teleport'])
 			{
