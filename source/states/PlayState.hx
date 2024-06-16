@@ -433,6 +433,9 @@ class PlayState extends FlxState
 
 			projectileGrp.add(projectile);
 			grpSort.add(projectile);
+			var p = new FlxAnimate(projSpawnPos.x, projSpawnPos.y, "assets/images/Projectile");
+			p.anim.play();
+			add(p);
 			if (burst)
 			{
 				new FlxTimer().start(0.2, function(_)
