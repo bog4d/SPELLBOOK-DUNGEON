@@ -151,6 +151,7 @@ class PlayState extends FlxState
 		add(hud);
 		//---------------------\\
 		camGame.follow(plrHurtbox, LOCKON, 1);
+		camHud.fade(0xFF000000, .5, true);
 		super.create();
 
 		levelLoader.loadEntities((ent:EntityData) ->
