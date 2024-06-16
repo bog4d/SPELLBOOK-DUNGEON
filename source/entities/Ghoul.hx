@@ -52,7 +52,7 @@ class Ghoul extends FlxSprite implements IKillable implements IEnemy
 			if (invincibilityTime > 0)
 				return;
 			projectile.targetHit();
-			enemy.takeDamage(projectile.damage);
+			enemy.takeDamage(projectile.damage * projectile.damage);
 		});
 	}
 

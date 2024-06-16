@@ -319,7 +319,7 @@ class PlayState extends FlxState
 		{
 			case 'KYS', 'KILLYOURSELF', 'DIE':
 				trace('DIE!!!!');
-				player.takeDamage(999);
+				player.takeDamage(player.hp);
 			case 'EXPLOSION':
 				if (unlockedSpells[EXPLOSION] == false)
 					return;
@@ -331,7 +331,7 @@ class PlayState extends FlxState
 				if (unlockedSpells[POISON] == false)
 					return;
 			case 'TELEPORT':
-				return; // probbb not for the jam. Too buggy.
+				// return; // probbb not for the jam. Too buggy.
 				if (unlockedSpells[TELEPORT] == false || Projectile.activeEffects['teleport'])
 					return;
 
