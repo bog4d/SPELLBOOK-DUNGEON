@@ -27,7 +27,7 @@ class MainMenuState extends FlxState
 			() ->
 			{
 				PlayState.isLevelSelect = false;
-				PlayState.LevelID = 0;
+				PlayState.LevelID = FlxG.random.int(0, 3);
 				FlxG.camera.fade(0xFF000000, 0.5, false, () -> FlxG.switchState(new states.PlayState()));
 			}
 		],
