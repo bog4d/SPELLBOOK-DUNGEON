@@ -9,5 +9,5 @@ class KeyBinds
 	public static final PLR_UP:Array<FlxKey> = [FlxKey.UP, FlxKey.W];
 	public static final PLR_DOWN:Array<FlxKey> = [FlxKey.DOWN, FlxKey.S];
 
-	public static final CAST_SPELL:Array<FlxKey> = [FlxKey.CONTROL, FlxKey.SHIFT, FlxKey.ENTER];
+	public static final CAST_SPELL:Array<FlxKey> = [FlxKey.CONTROL, FlxKey.SHIFT];
 }
