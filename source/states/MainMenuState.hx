@@ -29,6 +29,9 @@ class MainMenuState extends FlxState
 	{
 		instance = this;
 
+		FlxG.sound.playMusic("assets/music/mainMenu.ogg", 0);
+		FlxG.sound.music.fadeIn(1, 0, 0.6);
+
 		camera.bgColor = 0xFF808080;
 		camera.fade(0xFF000000, 0.5, true);
 

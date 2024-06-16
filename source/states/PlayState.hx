@@ -75,6 +75,7 @@ class PlayState extends FlxState
 
 	override public function create()
 	{
+		FlxG.sound.music.stop();
 		instance = this;
 		FlxG.timeScale = 1;
 		//-----[Cameras]-----\\
