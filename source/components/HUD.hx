@@ -18,6 +18,8 @@ class HUD extends FlxSpriteGroup
 	var vignette:FlxSprite;
 
 	public var spellTimeBar:FlxSprite;
+	public var enemiesLeftCounter:FlxText;
+	public var enemyCounterObjective:FlxText;
 
 	var spellunlock_bg:FlxSprite;
 	var spellUnlock_header:FlxText;
@@ -51,6 +53,17 @@ class HUD extends FlxSpriteGroup
 		healthBar = new FlxBar(10, FlxG.height - 50, LEFT_TO_RIGHT, 250, 40, null, null, 0, 100);
 		healthBar.createFilledBar(0xFF0F0305, 0xFFBE3144);
 
+		enemiesLeftCounter = new FlxText(FlxG.width - 110, 10, 100, '0');
+		enemiesLeftCounter.setFormat('assets/fonts/Hello Roti.otf', 50, 0xFFFF0000, RIGHT);
+		enemiesLeftCounter.setBorderStyle(OUTLINE, 0xAD440000, 3, 1);
+		enemiesLeftCounter.antialiasing = true;
+
+		enemyCounterObjective = new FlxText(FlxG.width - FlxG.width / 2, enemiesLeftCounter.y + enemiesLeftCounter.height, FlxG.width / 2,
+			'Kill all remaining enemies.');
+		enemyCounterObjective.setFormat('assets/fonts/Hello Roti.otf', 20, 0xFFFF0000, RIGHT);
+		enemyCounterObjective.setBorderStyle(OUTLINE, 0xC35D0000, 3, 1);
+		enemyCounterObjective.antialiasing = true;
+
 		spellTimeBar = new FlxSprite(0, 25).makeGraphic(1, 25, 0xFFFFFFFF);
 		spellTimeBar.alpha = 0;
 
@@ -74,6 +87,8 @@ class HUD extends FlxSpriteGroup
 		//-----[Layering]-----\\
 		add(vignette);
 		add(healthBar);
+		add(enemiesLeftCounter);
+		add(enemyCounterObjective);
 		add(spellTimeBar);
 
 		add(spellunlock_bg);
@@ -89,7 +104,10 @@ class HUD extends FlxSpriteGroup
 		spellunlock_bg.screenCenter(X);
 
 		healthBar.value = FlxMath.lerp(healthBar.value, PlayState.instance.player.hp, 25 * elapsed);
+		enemiesLeftCounter.text = '${PlayState.instance.enemyGrp.countLiving() - 1}';
 
+		if (enemiesLeftCounter.text == '0')
+			enemyCounterObjective.text = 'Find the exit portal.';
 		/*
 			#if debug
 			if (FlxG.keys.justPressed.K)
