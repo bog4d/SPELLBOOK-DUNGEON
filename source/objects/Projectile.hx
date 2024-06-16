@@ -35,16 +35,15 @@ class Projectile extends FlxSprite
 
 	public function new(spawnPos:FlxPoint, clickPoint:FlxPoint):Void
 	{
-		super();
+		super(spawnPos.x, spawnPos.y);
+		actEff = activeEffects.copy();
 		this.clickPoint = clickPoint;
 		damage *= damageMultiplier;
-		ignorePlrTime = activeEffects['sonic_shot'] ? .1 : .15;
+		ignorePlrTime = actEff['sonic_shot'] ? .1 : .15;
 
-		actEff = activeEffects.copy();
 		makeGraphic(50, 10, 0xFFFFFFFF);
 
 		// lookAt(clickPoint)
-		setPosition(spawnPos.x, spawnPos.y);
 
 		angle = FlxAngle.angleBetweenMouse(this, true);
 		velocity = FlxVelocity.velocityFromAngle(angle, speed);
@@ -58,13 +57,12 @@ class Projectile extends FlxSprite
 		ignorePlrTime -= elapsed;
 		ignorePlrTime = FlxMath.bound(ignorePlrTime, 0, 1);
 
-		/*
-			//only works when enemy is immovable, which causes collision issues
-				if (actEff['bounce'])
-					FlxG.collide(this, PlayState.instance.enemyGrp,
-						(_:Projectile, two:FlxObject) -> _.angle = FlxAngle.TO_DEG * Math.atan2(velocity.x / speed, -(velocity.y / speed)) - 90);
-		 */
-
+		if (actEff['bounce'])
+			FlxG.collide(this, PlayState.instance.enemyGrp, (_:Projectile, two:FlxObject) ->
+			{
+				_.angle = FlxAngle.TO_DEG * Math.atan2(velocity.x / speed, -(velocity.y / speed)) - 90;
+				velocity = FlxVelocity.velocityFromAngle(angle, speed);
+			});
 		elasticity = actEff['bounce'] ? 1 : 0;
 
 		FlxG.collide(this, PlayState.instance.level, (projectile:Projectile, prefab) ->

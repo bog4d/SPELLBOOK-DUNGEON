@@ -287,6 +287,13 @@ class PlayState extends FlxState
 			case 'POISON':
 				if (unlockedSpells[POISON] == false)
 					return;
+
+				Projectile.activeEffects['poison'] = true;
+
+				new FlxTimer().start(5, (tmr) ->
+				{
+					Projectile.activeEffects['poison'] = false;
+				});
 			case 'TELEPORT':
 				// return; // probbb not for the jam. Too buggy.
 				if (unlockedSpells[TELEPORT] == false || Projectile.activeEffects['teleport'])
