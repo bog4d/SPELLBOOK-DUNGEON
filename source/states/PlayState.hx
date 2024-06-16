@@ -87,7 +87,7 @@ class PlayState extends FlxState
 
 		camHud.bgColor.alpha = 0;
 		//-----[LV LOADER SHITS]-----\\
-		levelLoader = new FlxOgmo3Loader('assets/data/SpellbookDungeon.ogmo', 'assets/data/levels/lv_${FlxG.random.int(0, 3)}.json');
+		levelLoader = new FlxOgmo3Loader('assets/data/SpellbookDungeon.ogmo', 'assets/data/levels/lv_${LevelID}.json');
 		level = levelLoader.loadTilemap('assets/images/tileset.png', 'Level');
 		addTileProprieties(level);
 		level.follow(camGame);
