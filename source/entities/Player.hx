@@ -24,15 +24,21 @@ class Player extends FlxSprite implements IKillable
 	{
 		super();
 
-		frames = FlxAtlasFrames.fromSparrow('assets/images/characters/player/Player.png', 'assets/images/characters/player/Player.xml');
+		frames = FlxAtlasFrames.fromSparrow('assets/images/characters/player/player.png', 'assets/images/characters/player/player.xml');
 		scale.set(.3, .3);
 		updateHitbox();
 		height = 10;
 		width -= 25;
+		immovable = true;
 
 		origin.y += 300;
 		offset.y += 360;
 		offset.x += 10;
+
+		animation.addByPrefix("Down", "Down", 10);
+		animation.addByPrefix("Left", "Left", 10);
+		animation.addByPrefix("Right", "Right", 10);
+		animation.addByPrefix("Up", "Up", 10);
 
 		antialiasing = true;
 	}
@@ -57,19 +63,20 @@ class Player extends FlxSprite implements IKillable
 			if (invincibilityTime > 0 || projectile.ignorePlrTime > 0)
 				return;
 			projectile.targetHit();
-			plr.takeDamage(projectile.damage);
+			if (!projectile.actEff["teleport"])
+				plr.takeDamage(projectile.damage);
 		});
 
 		scale.x = FlxMath.lerp(scale.x, .3, 20 * elapsed);
 
-		if (Math.abs(velocity.x) > 5 || Math.abs(velocity.y) > 5)
-		{
-			scale.y = FlxMath.lerp(scale.y, .3 + Math.sin(timeSinceSpawn * 20) / 50, 15 * elapsed);
-		}
-		else
-		{
-			scale.y = FlxMath.lerp(scale.y, .3 + Math.sin(timeSinceSpawn * 2) / 100, 15 * elapsed);
-		}
+		// if (Math.abs(velocity.x) > 5 || Math.abs(velocity.y) > 5)
+		// {
+		// 	scale.y = FlxMath.lerp(scale.y, .3 + Math.sin(timeSinceSpawn * 20) / 50, 20 * elapsed);
+		// }
+		// else
+		// {
+		scale.y = FlxMath.lerp(scale.y, .3 + Math.sin(timeSinceSpawn * 2) / 100, 20 * elapsed);
+		// }
 	}
 
 	public function takeDamage(dmg:Int):Void
@@ -110,11 +117,15 @@ class Player extends FlxSprite implements IKillable
 			hp = 100;
 	}
 
+	var faded:Bool = false;
+
 	public function teleportToPos(newPos:FlxPoint):Void
 	{
 		setPosition(newPos.x, newPos.y);
 		PlayState.instance.player.scale.set(1, 0.01);
-		PlayState.instance.camGame.fade(0xFF000000, 0.3, true, true);
+		if (!faded)
+			PlayState.instance.camGame.fade(0xFF000000, 0.3, true, () -> faded = false, true);
+		faded = true;
 	}
 
 	var moveDir:FlxPoint = new FlxPoint(0, 0);
@@ -163,19 +174,19 @@ class Player extends FlxSprite implements IKillable
 
 		if (mousePos.x > hurtbox.x + hurtbox.width)
 		{
-			animation.frameIndex = 1;
+			animation.play("Right");
 		}
 		else if (mousePos.x < hurtbox.x)
 		{
-			animation.frameIndex = 3;
+			animation.play("Left");
 		}
 		else if (mousePos.y > hurtbox.y + hurtbox.height / 2)
 		{
-			animation.frameIndex = 0;
+			animation.play("Down");
 		}
 		else if (mousePos.y < hurtbox.y + hurtbox.height / 2)
 		{
-			animation.frameIndex = 2;
+			animation.play("Up");
 		}
 	}
 }

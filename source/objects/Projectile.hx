@@ -31,6 +31,8 @@ class Projectile extends FlxSprite
 		'teleport' => false,
 	];
 
+	public var actEff:Map<String, Bool> = [];
+
 	public function new(spawnPos:FlxPoint, clickPoint:FlxPoint):Void
 	{
 		super();
@@ -38,6 +40,7 @@ class Projectile extends FlxSprite
 		damage *= damageMultiplier;
 		ignorePlrTime = activeEffects['sonic_shot'] ? .1 : .15;
 
+		actEff = activeEffects.copy();
 		makeGraphic(50, 10, 0xFFFFFFFF);
 
 		// lookAt(clickPoint)
@@ -55,20 +58,20 @@ class Projectile extends FlxSprite
 		ignorePlrTime -= elapsed;
 		ignorePlrTime = FlxMath.bound(ignorePlrTime, 0, 1);
 
-		if (activeEffects['bounce'])
+		if (actEff['bounce'])
 			FlxG.collide(this, PlayState.instance.enemyGrp,
 				(_:Projectile, two:FlxObject) -> _.angle = FlxAngle.TO_DEG * Math.atan2(velocity.x / speed, -(velocity.y / speed)) - 90);
 
-		elasticity = activeEffects['bounce'] ? 1 : 0;
+		elasticity = actEff['bounce'] ? 1 : 0;
 
 		FlxG.collide(this, PlayState.instance.level, (projectile:Projectile, prefab) ->
 		{
-			if (activeEffects['teleport'])
+			if (actEff['teleport'])
 			{
 				PlayState.instance.player.teleportToPos(getMidpoint());
 			}
 
-			if (activeEffects['bounce'])
+			if (actEff['bounce'])
 			{
 				projectile.angle = FlxAngle.TO_DEG * Math.atan2(velocity.x / speed, -(velocity.y / speed)) - 90;
 				return;
@@ -78,6 +81,9 @@ class Projectile extends FlxSprite
 
 		lifetime -= elapsed;
 
+		if (lifetime < 1)
+			visible = !visible;
+
 		if (lifetime < 0)
 			this.destroy();
 	}
@@ -86,18 +92,18 @@ class Projectile extends FlxSprite
 
 	public function targetHit():Void
 	{
-		if (activeEffects['teleport'])
+		if (actEff['teleport'])
 		{
-			PlayState.instance.player.teleportToPos(getMidpoint());
+			PlayState.instance.player.teleportToPos(getPosition());
 		}
 
-		if (activeEffects['piercer'] == true && remainingPierces > 0)
+		if (actEff['piercer'] == true && remainingPierces > 0)
 		{
 			remainingPierces--;
 		}
 		else
 		{
-			if (activeEffects['bounce'])
+			if (actEff['bounce'])
 				return;
 
 			destroy();
