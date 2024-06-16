@@ -55,7 +55,10 @@ class GameOverSubState extends FlxSubState
 			canExit = false;
 			PlayState.instance.camHud.fade(0xFF000000, 1, false, () ->
 			{
-				FlxG.switchState(new states.MainMenuState());
+				if (PlayState.isLevelSelect)
+					FlxG.switchState(new states.MainMenuState());
+				else
+					FlxG.resetState();
 				close();
 			});
 		}

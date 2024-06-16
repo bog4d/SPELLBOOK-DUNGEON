@@ -26,6 +26,7 @@ import flixel.util.FlxSort;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
 import flxanimate.FlxAnimate;
+import objects.ExitPortal;
 import objects.Projectile;
 import objects.SpellBook;
 import openfl.Assets;
@@ -33,6 +34,8 @@ import openfl.Assets;
 class PlayState extends FlxState
 {
 	public static var instance:PlayState;
+	public static var LevelID:Int = 0;
+	public static var isLevelSelect:Bool = false;
 
 	var grpSort:FlxTypedGroup<FlxObject>;
 
@@ -79,7 +82,7 @@ class PlayState extends FlxState
 
 		camHud.bgColor.alpha = 0;
 		//-----[LV LOADER SHITS]-----\\
-		levelLoader = new FlxOgmo3Loader('assets/data/SpellbookDungeon.ogmo', 'assets/data/levels/lv_3.json');
+		levelLoader = new FlxOgmo3Loader('assets/data/SpellbookDungeon.ogmo', 'assets/data/levels/lv_$LevelID.json');
 		level = levelLoader.loadTilemap('assets/images/tileset.png', 'Level');
 		addTileProprieties(level);
 		level.follow(camGame);
@@ -170,6 +173,11 @@ class PlayState extends FlxState
 					_spellBook.setPosition(ent.x - _spellBook.width / 2, ent.y - _spellBook.height / 2);
 
 					insert(members.indexOf(level) + 1, _spellBook);
+				case 'Exit':
+					var _exit:ExitPortal = new ExitPortal();
+					_exit.setPosition(ent.x - _exit.width / 2, ent.y - _exit.height / 2);
+
+					insert(members.indexOf(level) + 1, _exit);
 			}
 		}, 'Entities');
 		camGame.bgColor = 0xFF353535;
@@ -180,7 +188,7 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 		FlxG.collide(enemyGrp, level);
-		FlxG.collide(enemyGrp, enemyGrp);
+		// FlxG.collide(enemyGrp, enemyGrp);
 		FlxG.collide(player, level);
 
 		camGame.followLerp = 5 * elapsed;
