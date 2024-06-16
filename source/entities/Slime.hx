@@ -11,6 +11,7 @@ import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxVelocity;
 import flixel.tweens.FlxTween;
+import flixel.util.FlxTimer;
 import objects.Projectile;
 import states.PlayState;
 
@@ -59,8 +60,14 @@ class Slime extends FlxSprite implements IKillable implements IEnemy
 		{
 			if (invincibilityTime > 0)
 				return;
+
 			projectile.targetHit();
 			enemy.takeDamage(projectile.damage);
+			if (projectile.actEff["poison"])
+				new FlxTimer().start(2, function(_)
+				{
+					enemy.takeDamage(projectile.damage);
+				}, 2);
 		});
 	}
 
