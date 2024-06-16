@@ -22,8 +22,10 @@ import flixel.sound.FlxSound;
 import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
+import flixel.util.FlxSort;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
+import flxanimate.FlxAnimate;
 import objects.Projectile;
 import objects.SpellBook;
 import openfl.Assets;
@@ -31,6 +33,8 @@ import openfl.Assets;
 class PlayState extends FlxState
 {
 	public static var instance:PlayState;
+
+	var grpSort:FlxTypedGroup<FlxObject>;
 
 	public var camGame:FlxCamera;
 	public var camHud:FlxCamera;
@@ -67,6 +71,8 @@ class PlayState extends FlxState
 		//-----[Cameras]-----\\
 		camGame = new FlxCamera();
 		camHud = new FlxCamera();
+
+		grpSort = new FlxTypedGroup();
 
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHud, false);
@@ -133,10 +139,10 @@ class PlayState extends FlxState
 		add(bg);
 		add(level);
 
-		add(enemyGrp);
-		add(projectileGrp);
-		add(player);
-		add(plrHurtbox);
+		// add(enemyGrp);
+		// add(projectileGrp);
+		grpSort.add(player);
+		grpSort.add(plrHurtbox);
 
 		add(spellCastTxt);
 		add(crosshair);
@@ -157,14 +163,16 @@ class PlayState extends FlxState
 					var _slime:Slime = new Slime();
 					_slime.setPosition(ent.x - _slime.width / 2, ent.y - _slime.height / 2);
 					enemyGrp.add(_slime);
+					grpSort.add(_slime);
 				case 'SpellbookSpawner':
 					var _spellBook:SpellBook = new SpellBook(SPELLS_ACTION.createByName(ent.values.SPELL));
 					_spellBook.setPosition(ent.x - _spellBook.width / 2, ent.y - _spellBook.height / 2);
 
-					insert(members.indexOf(enemyGrp), _spellBook);
+					insert(members.indexOf(level) + 1, _spellBook);
 			}
 		}, 'Entities');
 		camGame.bgColor = 0xFF353535;
+		add(grpSort);
 	}
 
 	override public function update(elapsed:Float)
@@ -195,6 +203,10 @@ class PlayState extends FlxState
 		#if debug
 		FlxG.watch.addQuick('isInCombat', isInCombat);
 		#end
+		grpSort.sort((Order, Obj1, Obj2) ->
+		{
+			return FlxSort.byValues(Order, Obj1.y + Obj1.height, Obj2.y + Obj2.height);
+		});
 	}
 
 	var crosshairLerpX:Float;
@@ -270,6 +282,8 @@ class PlayState extends FlxState
 		InvokeSpell(spellCastTxt.curSpell);
 	}
 
+	var burst:Bool = false;
+
 	private function InvokeSpell(spell:String):Void
 	{
 		switch (spell.toUpperCase())
@@ -308,9 +322,22 @@ class PlayState extends FlxState
 			case 'SPEEDBOOST':
 				if (unlockedSpells[SPEED_BOOST] == false)
 					return;
+
+				player.speed = 600;
+
+				new FlxTimer().start(5, (tmr) ->
+				{
+					player.speed = 300;
+				});
 			case 'BURST':
 				if (unlockedSpells[BURST] == false)
 					return;
+
+				burst = true;
+				new FlxTimer().start(5, (tmr) ->
+				{
+					burst = false;
+				});
 			case 'PIERCER':
 				if (unlockedSpells[PIERCER] == false || Projectile.activeEffects['piercer'])
 					return;
@@ -401,9 +428,25 @@ class PlayState extends FlxState
 		{
 			canShoot = false;
 			var projSpawnPos:FlxPoint = new FlxPoint(plrHurtbox.getMidpoint().x - 25, plrHurtbox.getMidpoint().y);
+
 			var projectile:Projectile = new Projectile(projSpawnPos, FlxG.mouse.getScreenPosition(camGame));
 
 			projectileGrp.add(projectile);
+			grpSort.add(projectile);
+			var p = new FlxAnimate(projSpawnPos.x, projSpawnPos.y, "assets/images/Projectile");
+			p.anim.play();
+			add(p);
+			if (burst)
+			{
+				new FlxTimer().start(0.2, function(_)
+				{
+					var projSpawnPos:FlxPoint = new FlxPoint(plrHurtbox.getMidpoint().x - 25, plrHurtbox.getMidpoint().y);
+
+					var projectile:Projectile = new Projectile(projSpawnPos, FlxG.mouse.getScreenPosition(camGame));
+
+					projectileGrp.add(projectile);
+				}, 2);
+			}
 
 			new FlxTimer().start(shootingCooldown, (tmr) -> canShoot = true);
 		}
