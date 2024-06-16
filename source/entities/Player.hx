@@ -24,7 +24,7 @@ class Player extends FlxSprite implements IKillable
 	{
 		super();
 
-		frames = FlxAtlasFrames.fromSparrow('assets/images/characters/player/player.png', 'assets/images/characters/player/player.xml');
+		frames = FlxAtlasFrames.fromSparrow('assets/images/characters/player/Player.png', 'assets/images/characters/player/Player.xml');
 		scale.set(.3, .3);
 		updateHitbox();
 		height = 10;
