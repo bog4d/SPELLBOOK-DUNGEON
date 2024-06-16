@@ -25,6 +25,7 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxSort;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
+import flxanimate.FlxAnimate;
 import objects.Projectile;
 import objects.SpellBook;
 import openfl.Assets;
@@ -167,7 +168,7 @@ class PlayState extends FlxState
 					var _spellBook:SpellBook = new SpellBook(SPELLS_ACTION.createByName(ent.values.SPELL));
 					_spellBook.setPosition(ent.x - _spellBook.width / 2, ent.y - _spellBook.height / 2);
 
-					insert(members.indexOf(projectileGrp) - 1, _spellBook);
+					insert(members.indexOf(level) + 1, _spellBook);
 			}
 		}, 'Entities');
 		camGame.bgColor = 0xFF353535;
