@@ -14,8 +14,10 @@ import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
+import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
+import flixel.math.FlxAngle;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.sound.FlxSound;
@@ -45,6 +47,9 @@ class PlayState extends FlxState
 	var hud:HUD;
 
 	public var player:Player;
+
+	var hand:FlxSprite;
+
 	public var plrHurtbox:FlxObject;
 
 	var spellCastTxt:SpellCastText;
@@ -82,7 +87,7 @@ class PlayState extends FlxState
 
 		camHud.bgColor.alpha = 0;
 		//-----[LV LOADER SHITS]-----\\
-		levelLoader = new FlxOgmo3Loader('assets/data/SpellbookDungeon.ogmo', 'assets/data/levels/lv_$LevelID.json');
+		levelLoader = new FlxOgmo3Loader('assets/data/SpellbookDungeon.ogmo', 'assets/data/levels/lv_${FlxG.random.int(0, 3)}.json');
 		level = levelLoader.loadTilemap('assets/images/tileset.png', 'Level');
 		addTileProprieties(level);
 		level.follow(camGame);
@@ -104,6 +109,14 @@ class PlayState extends FlxState
 		baseMusic.volume = .3;
 		// baseMusic.endTime = baseMusic.length - 10;
 		baseMusic.play();
+
+		new FlxTimer().start(5, function(_)
+		{
+			if (calmMusic.time != baseMusic.time)
+				calmMusic.time = baseMusic.time;
+			if (combatMusic.time != baseMusic.time)
+				combatMusic.time = baseMusic.time;
+		}, 0);
 
 		//-----[Other]-----\\
 
@@ -145,6 +158,16 @@ class PlayState extends FlxState
 		// add(enemyGrp);
 		// add(projectileGrp);
 		grpSort.add(player);
+		hand = new FlxSprite();
+		hand.frames = FlxAtlasFrames.fromSparrow("assets/images/Hand.png", "assets/images/Hand.xml");
+		hand.animation.addByPrefix("h", "Hand", 10);
+		hand.animation.play("h");
+		hand.scale.set(0.3, 0.3);
+		hand.updateHitbox();
+
+		@:privateAccess
+		hand.velocity = player.velocity;
+		grpSort.add(hand);
 		grpSort.add(plrHurtbox);
 
 		add(spellCastTxt);
@@ -163,6 +186,10 @@ class PlayState extends FlxState
 			{
 				case 'PlayerSpawn':
 					player.setPosition(ent.x - player.width / 2, ent.y - player.height / 2);
+					hand.setPosition(player.x + player.width, player.y - 60);
+
+					hand.origin.x -= (hand.width + 20) * 3;
+					hand.x += Math.abs(hand.origin.x) * 1.5;
 				case 'Enemy':
 					var _slime:Slime = new Slime();
 					_slime.setPosition(ent.x - _slime.width / 2, ent.y - _slime.height / 2);
@@ -433,6 +460,7 @@ class PlayState extends FlxState
 
 	private function HandleShooting():Void
 	{
+		hand.angle = FlxAngle.angleBetweenMouse(plrHurtbox, true);
 		if (FlxG.mouse.justPressed && canShoot && !isinSpellMode)
 		{
 			canShoot = false;
@@ -442,9 +470,6 @@ class PlayState extends FlxState
 
 			projectileGrp.add(projectile);
 			grpSort.add(projectile);
-			var p = new FlxAnimate(projSpawnPos.x, projSpawnPos.y, "assets/images/Projectile");
-			p.anim.play();
-			add(p);
 			if (burst)
 			{
 				new FlxTimer().start(0.2, function(_)
@@ -454,6 +479,7 @@ class PlayState extends FlxState
 					var projectile:Projectile = new Projectile(projSpawnPos, FlxG.mouse.getScreenPosition(camGame));
 
 					projectileGrp.add(projectile);
+					grpSort.add(projectile);
 				}, 2);
 			}
 

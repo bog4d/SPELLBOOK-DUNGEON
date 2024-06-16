@@ -3,6 +3,7 @@ package objects;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxAngle;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
@@ -41,7 +42,18 @@ class Projectile extends FlxSprite
 		damage *= damageMultiplier;
 		ignorePlrTime = actEff['sonic_shot'] ? .1 : .15;
 
-		makeGraphic(50, 10, 0xFFFFFFFF);
+		// makeGraphic(50, 10, 0xFFFFFFFF);
+
+		frames = FlxAtlasFrames.fromSparrow("assets/images/Projectile.png", "assets/images/Projectile.xml");
+
+		animation.addByPrefix("m", "Export", 24);
+
+		animation.play("m");
+
+		height = 21;
+		width = 22;
+
+		offset.set(100, 30);
 
 		// lookAt(clickPoint)
 

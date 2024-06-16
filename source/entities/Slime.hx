@@ -48,7 +48,7 @@ class Slime extends FlxSprite implements IKillable implements IEnemy
 		fsm.update(elapsed);
 		super.update(elapsed);
 
-		if (FlxG.overlap(this, PlayState.instance.plrHurtbox))
+		if (FlxG.overlap(this, PlayState.instance.player) || FlxG.overlap(this, PlayState.instance.plrHurtbox))
 		{
 			PlayState.instance.player.takeDamage(dmg);
 		}
@@ -115,7 +115,7 @@ class Slime extends FlxSprite implements IKillable implements IEnemy
 		FlxVelocity.moveTowardsPoint(this, idlePos, 50);
 		if (getPosition().distanceTo(PlayState.instance.plrHurtbox.getMidpoint()) < 500)
 		{
-			if (PlayState.instance.level.ray(this.getMidpoint(), PlayState.instance.player.getMidpoint()))
+			if (PlayState.instance.level.ray(this.getMidpoint(), PlayState.instance.plrHurtbox.getMidpoint()))
 			{
 				fsm.setState(state_aggresive);
 			}
@@ -126,6 +126,8 @@ class Slime extends FlxSprite implements IKillable implements IEnemy
 	{
 		isAggro = true;
 		animation.curAnim.frameRate = 24;
-		FlxVelocity.moveTowardsPoint(this, PlayState.instance.plrHurtbox.getMidpoint(), (invincibilityTime <= 0) ? speed : speed / 2);
+		var p = PlayState.instance.plrHurtbox.getPosition();
+		p.add(PlayState.instance.plrHurtbox.width * 2.5, PlayState.instance.plrHurtbox.height);
+		FlxVelocity.moveTowardsPoint(this, p, (invincibilityTime <= 0) ? speed : speed / 2);
 	}
 }
