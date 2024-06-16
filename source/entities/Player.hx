@@ -9,6 +9,7 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.tweens.FlxTween;
+import flixel.util.FlxTimer;
 import objects.Projectile;
 import states.PlayState;
 import substates.GameOverSubState;
@@ -65,6 +66,12 @@ class Player extends FlxSprite implements IKillable
 			projectile.targetHit();
 			if (!projectile.actEff["teleport"])
 				plr.takeDamage(projectile.damage);
+
+			if (projectile.actEff["poison"])
+				new FlxTimer().start(2, function(_)
+				{
+					plr.takeDamage(projectile.damage);
+				}, 2);
 		});
 
 		scale.x = FlxMath.lerp(scale.x, .3, 20 * elapsed);
