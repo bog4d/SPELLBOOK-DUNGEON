@@ -26,7 +26,7 @@ class Slime extends FlxSprite implements IKillable implements IEnemy
 	public function new():Void
 	{
 		super();
-		immovable = true;
+		// immovable = true;
 
 		fsm = new FSM(state_idle);
 
