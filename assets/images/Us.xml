@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="Us.png">
+	<!-- Created with Adobe Animate version 23.0.2.103 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Them0000" x="0" y="0" width="292" height="194"/>
+	<SubTexture name="Them0001" x="0" y="0" width="292" height="194"/>
+	<SubTexture name="Them0002" x="292" y="0" width="292" height="194"/>
+	<SubTexture name="Them0003" x="292" y="0" width="292" height="194"/>
+	<SubTexture name="Them0004" x="584" y="0" width="292" height="194"/>
+	<SubTexture name="Them0005" x="584" y="0" width="292" height="194"/>
+</TextureAtlas>

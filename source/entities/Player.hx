@@ -105,7 +105,7 @@ class Player extends FlxSprite implements IKillable
 
 	public function onDeath():Void
 	{
-		PlayState.instance.resetProgress();
+		// PlayState.instance.resetProgress(); no more rougelike wuh oh
 
 		FlxG.camera.shake(0.05, 0.1);
 		var gameOverSubSub:GameOverSubState = new GameOverSubState();

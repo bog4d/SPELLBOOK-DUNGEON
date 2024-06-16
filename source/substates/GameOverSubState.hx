@@ -52,8 +52,15 @@ class GameOverSubState extends FlxSubState
 		PlayState.instance.camGame.zoom -= elapsed * .01;
 		if (FlxG.keys.justPressed.ANY && canExit)
 		{
-			FlxG.resetState();
-			close();
+			canExit = false;
+			PlayState.instance.camHud.fade(0xFF000000, 1, false, () ->
+			{
+				if (PlayState.isLevelSelect)
+					FlxG.switchState(new states.MainMenuState());
+				else
+					FlxG.resetState();
+				close();
+			});
 		}
 	}
 }

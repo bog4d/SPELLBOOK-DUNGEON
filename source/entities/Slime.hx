@@ -107,6 +107,8 @@ class Slime extends FlxSprite implements IKillable implements IEnemy
 		if (idleTimer <= 0)
 		{
 			idleTimer = FlxG.random.float(0.1, 3);
+
+			idlePos = getPosition();
 			idlePos.x += FlxG.random.float(-250, 250);
 			idlePos.y += FlxG.random.float(-250, 250);
 		}

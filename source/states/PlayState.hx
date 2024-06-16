@@ -28,6 +28,7 @@ import flixel.util.FlxSort;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
 import flxanimate.FlxAnimate;
+import objects.ExitPortal;
 import objects.Projectile;
 import objects.SpellBook;
 import openfl.Assets;
@@ -35,6 +36,8 @@ import openfl.Assets;
 class PlayState extends FlxState
 {
 	public static var instance:PlayState;
+	public static var LevelID:Int = 0;
+	public static var isLevelSelect:Bool = false;
 
 	var grpSort:FlxTypedGroup<FlxObject>;
 
@@ -174,6 +177,7 @@ class PlayState extends FlxState
 		add(hud);
 		//---------------------\\
 		camGame.follow(plrHurtbox, LOCKON, 1);
+		camHud.fade(0xFF000000, .5, true);
 		super.create();
 
 		levelLoader.loadEntities((ent:EntityData) ->
@@ -196,6 +200,11 @@ class PlayState extends FlxState
 					_spellBook.setPosition(ent.x - _spellBook.width / 2, ent.y - _spellBook.height / 2);
 
 					insert(members.indexOf(level) + 1, _spellBook);
+				case 'Exit':
+					var _exit:ExitPortal = new ExitPortal();
+					_exit.setPosition(ent.x - _exit.width / 2, ent.y - _exit.height / 2);
+
+					insert(members.indexOf(level) + 1, _exit);
 			}
 		}, 'Entities');
 		camGame.bgColor = 0xFF353535;
@@ -206,7 +215,7 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 		FlxG.collide(enemyGrp, level);
-		FlxG.collide(enemyGrp, enemyGrp);
+		// FlxG.collide(enemyGrp, enemyGrp);
 		FlxG.collide(player, level);
 
 		camGame.followLerp = 5 * elapsed;

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="Portal.png">
+	<!-- Created with Adobe Animate version 23.0.2.103 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Portal0000" x="0" y="0" width="525" height="726"/>
+	<SubTexture name="Portal0001" x="0" y="0" width="525" height="726"/>
+	<SubTexture name="Portal0002" x="525" y="0" width="525" height="726"/>
+	<SubTexture name="Portal0003" x="525" y="0" width="525" height="726"/>
+	<SubTexture name="Portal0004" x="1050" y="0" width="525" height="726"/>
+	<SubTexture name="Portal0005" x="1050" y="0" width="525" height="726"/>
+</TextureAtlas>
