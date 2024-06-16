@@ -9,6 +9,8 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
+import substates.HowToPlaySubState;
+import substates.LevelSelectSubState;
 
 class MainMenuState extends FlxState
 {
@@ -20,27 +22,6 @@ class MainMenuState extends FlxState
 	var title:FlxText;
 
 	var them:FlxSprite;
-
-	var mainMenuOptions:Array<Array<Dynamic>> = [
-		[
-			'Play',
-			() ->
-			{
-				PlayState.isLevelSelect = false;
-				PlayState.LevelID = FlxG.random.int(0, 4);
-				FlxG.camera.fade(0xFF000000, 0.5, false, () -> FlxG.switchState(new states.PlayState()));
-			}
-		],
-		['Level Select', () -> {}],
-		[
-			'Credits',
-			() ->
-			{
-				FlxG.openURL('https://twitter.com/Bogdan4D');
-				FlxG.openURL('https://x.com/CheemsnFriendos');
-			}
-		]
-	];
 
 	var mainOptionsGrp:FlxTypedGroup<MenuButton>;
 
@@ -73,6 +54,40 @@ class MainMenuState extends FlxState
 		them.antialiasing = true;
 
 		mainOptionsGrp = new FlxTypedGroup<MenuButton>();
+
+		var mainMenuOptions:Array<Array<Dynamic>> = [
+			[
+				'Play',
+				() ->
+				{
+					PlayState.isLevelSelect = false;
+					PlayState.LevelID = 0;
+					FlxG.camera.fade(0xFF000000, 0.5, false, () -> FlxG.switchState(new states.PlayState()));
+				}
+			],
+			[
+				'Level Select',
+				() ->
+				{
+					openSubState(new LevelSelectSubState());
+				}
+			],
+			[
+				'How To Play',
+				() ->
+				{
+					openSubState(new HowToPlaySubState());
+				}
+			],
+			[
+				'Credits',
+				() ->
+				{
+					FlxG.openURL('https://twitter.com/Bogdan4D');
+					FlxG.openURL('https://x.com/CheemsnFriendos');
+				}
+			]
+		];
 
 		for (i in 0...mainMenuOptions.length)
 		{

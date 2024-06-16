@@ -59,7 +59,17 @@
         {"name": "Enemy", "id": 19, "_eid": "45997652", "x": 640, "y": 2672, "originX": 0, "originY": 0},
         {"name": "Enemy", "id": 20, "_eid": "45997652", "x": 240, "y": 3440, "originX": 0, "originY": 0},
         {"name": "Enemy", "id": 21, "_eid": "45997652", "x": 656, "y": 3344, "originX": 0, "originY": 0},
-        {"name": "Enemy", "id": 22, "_eid": "45997652", "x": 1136, "y": 3584, "originX": 0, "originY": 0}
+        {"name": "Enemy", "id": 22, "_eid": "45997652", "x": 1136, "y": 3584, "originX": 0, "originY": 0},
+        {
+          "name": "SpellbookSpawner",
+          "id": 23,
+          "_eid": "48658015",
+          "x": 1872,
+          "y": 3728,
+          "originX": 0,
+          "originY": 0,
+          "values": {"SPELL": "DOUBLE_DAMAGE"}
+        }
       ]
     }
   ]
