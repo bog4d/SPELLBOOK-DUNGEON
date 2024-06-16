@@ -11,7 +11,7 @@ class HowToPlaySubState extends FlxSubState
 	var header:FlxText;
 
 	final instructionText:String = 'Move with WASD or the arrow keys.
-    To cast a spell, press CONTROL or SHIFT or ENTER.
+    To cast a spell, press CONTROL or SHIFT.
     While casting a spell, you have to type the spells name in order to invoke it.
     Spells can be found around the levels. Make sure you remember the names!
     (We ran out of time and couldnt make a menu for that lol)
