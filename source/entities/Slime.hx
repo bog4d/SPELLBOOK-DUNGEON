@@ -67,6 +67,7 @@ class Slime extends FlxSprite implements IKillable implements IEnemy
 				new FlxTimer().start(2, function(_)
 				{
 					enemy.takeDamage(projectile.damage);
+					FlxTween.color(this, 1, 0xFFCD00CD, 0xFFFFFFFF);
 				}, 2);
 		});
 	}
