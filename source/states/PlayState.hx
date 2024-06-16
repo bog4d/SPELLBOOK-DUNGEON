@@ -75,8 +75,8 @@ class PlayState extends FlxState
 		//-----[LV LOADER SHITS]-----\\
 		levelLoader = new FlxOgmo3Loader('assets/data/SpellbookDungeon.ogmo', 'assets/data/levels/lv_3.json');
 		level = levelLoader.loadTilemap('assets/images/tileset.png', 'Level');
-		level.follow(camGame);
 		addTileProprieties(level);
+		level.follow(camGame);
 
 		//------[LE SOUND]------\\
 
@@ -170,6 +170,8 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		FlxG.collide(enemyGrp, level);
+		FlxG.collide(enemyGrp, enemyGrp);
 		FlxG.collide(player, level);
 
 		camGame.followLerp = 5 * elapsed;
@@ -403,10 +405,7 @@ class PlayState extends FlxState
 	private function HandleMusicStuff(elapsed:Float):Void
 	{
 		// redirect the time to the normal one in cae
-		if (calmMusic.time != baseMusic.time)
-			calmMusic.time = baseMusic.time;
-		if (combatMusic.time != baseMusic.time)
-			combatMusic.time = combatMusic.time;
+
 		if (isInCombat)
 		{
 			calmMusic.volume -= elapsed;

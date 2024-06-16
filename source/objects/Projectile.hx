@@ -36,11 +36,11 @@ class Projectile extends FlxSprite
 	public function new(spawnPos:FlxPoint, clickPoint:FlxPoint):Void
 	{
 		super();
+		actEff = activeEffects.copy();
 		this.clickPoint = clickPoint;
 		damage *= damageMultiplier;
-		ignorePlrTime = activeEffects['sonic_shot'] ? .1 : .15;
+		ignorePlrTime = actEff['sonic_shot'] ? .1 : .15;
 
-		actEff = activeEffects.copy();
 		makeGraphic(50, 10, 0xFFFFFFFF);
 
 		// lookAt(clickPoint)
